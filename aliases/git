@@ -1,0 +1,2 @@
+alias gitlog="git log --graph --oneline --all"
+alias dracarys="git reset --hard && git clean -df"
