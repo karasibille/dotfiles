@@ -1,0 +1,34 @@
+# Colors (Laser)
+
+[colors.primary]
+foreground = "#50b1cd"
+background = "#1f1658"
+
+[colors.cursor]
+text = "CellBackground"
+cursor = "CellForeground"
+
+[colors.normal]
+white   = "#f3f3f3"
+black   = "#1f1658"
+red     = "#e7435a"
+green   = "#56cc4d"
+yellow  = "#eadea2"
+blue    = "#44478f"
+magenta = "#6056de"
+cyan    = "#3bacc3"
+#black   = "#f3f3f3"
+
+[colors.bright]
+white   = "#1f1658"
+#white   = "#2d227d"
+red     = "#e965a5"
+green   = "#21f3bd"
+yellow  = "#f8c836"
+blue    = "#44478f"
+magenta = "#c551a3"
+cyan    = "#3bacc3"
+#black   = "#f3f3f3"
+black   = "#878fa9"
+
+[colors.selection]

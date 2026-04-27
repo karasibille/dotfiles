@@ -1,0 +1,34 @@
+
+[env]
+TERM = "xterm-256color"
+
+[window]
+# Blank space added around the window in pixels.
+# This padding is scaled by DPI and the specified value is always added at both opposing sides.
+padding = { x = 5, y = 20 }
+decorations = "None"
+
+[scrolling]
+history = 50000
+multiplier = 5
+
+[font]
+normal = { family = "Source Code Pro", style = "Regular" }
+bold = { style = "Bold" }
+italic = { style = "Italic" }
+bold_italic = { style = "Bold Italic" }
+size = 9
+
+[cursor]
+style = { shape = "Beam", blinking = "On" }
+thickness = 0.15
+
+[mouse]
+hide_when_typing = true
+
+[general]
+# GENERAL
+# Import additional configuration files.
+import = [
+    "~/.config/alacritty/laser-theme.toml",
+]
