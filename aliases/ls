@@ -1,0 +1,21 @@
+# eza (maintained fork of exa), falling back to exa on older distributions
+if (( $+commands[eza] )); then
+    _ls=eza
+elif (( $+commands[exa] )); then
+    _ls=exa
+fi
+
+if [[ -n $_ls ]]; then
+    ls_params=('--git' '--classify' '--group-directories-first' '--time-style=long-iso' '--group')
+    # eza's --color-scale takes an optional value and would swallow the next argument
+    [[ $_ls == eza ]] && ls_params+=('--color-scale=all') || ls_params+=('--color-scale')
+
+    alias ls="$_ls ${ls_params}"
+    alias l="$_ls --git-ignore ${ls_params}"
+    alias ll="$_ls --all --header --long ${ls_params}"
+    alias llm="$_ls --all --header --long --sort=modified ${ls_params}"
+    alias la="$_ls -lbhHgUmuSa --git"
+    alias lx="$_ls -lbhHgUmuSa@"
+    alias lt="$_ls --tree"
+fi
+unset _ls

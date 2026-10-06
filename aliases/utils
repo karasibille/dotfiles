@@ -1,3 +1,5 @@
 alias vim='nvim'
 alias v='nvim'
 alias open='xdg-open'
+alias pipes="pipes -p2 -t2 -f20 -r5000 -RB"
+alias nowel="perl -MAcme::POE::Tree -e 'Acme::POE::Tree->new()->run()'"
