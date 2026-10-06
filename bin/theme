@@ -228,6 +228,7 @@ def generate(name):
     if CURRENT.is_symlink() or CURRENT.exists():
         CURRENT.unlink()
     CURRENT.symlink_to(Path("colors") / name)
+    return colors
 
 
 def running(process):
@@ -257,6 +258,23 @@ def reload():
     if running("dunst"):
         run("dunstctl", "reload")
     # alacritty reloads its imported files by itself
+
+
+def notify(name, colors):
+    """Show the new palette in a notification, itself drawn with the new theme."""
+    if not (os.environ.get("DISPLAY") and shutil.which("notify-send")):
+        return
+    swatches = ["".join(f'<span foreground="{colors[f"color{i}"]}">██</span>' for i in row)
+                for row in (range(8), range(8, 16))]
+    run(
+        "notify-send",
+        "--app-name=theme",
+        "--icon=preferences-desktop-theme",
+        # Replace the previous theme notification instead of stacking them
+        "--hint=string:x-dunst-stack-tag:theme",
+        f"Theme: {name}",
+        "\n".join(swatches),
+    )
 
 
 def choose():
@@ -298,9 +316,10 @@ def main():
     if name not in themes():
         sys.exit(f"unknown theme {name!r}, available: {', '.join(themes())}")
 
-    generate(name)
+    colors = generate(name)
     if not args.no_reload:
         reload()
+        notify(name, colors)
     print(f"theme: {name}")
 
 
