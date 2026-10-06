@@ -1,0 +1,56 @@
+* {
+    nord0:  #2E3440;
+    nord1:  #3B4252;
+    nord2:  #434C5E;
+    nord3:  #4C566A;
+    nord4:  #D8DEE9;
+    nord5:  #E5E9F0;
+    nord6:  #ECEFF4;
+    nord7:  #8FBCBB;
+    nord8:  #88C0D0;
+    nord9:  #81A1C1;
+    nord10: #5E81AC;
+    nord11: #BF616A;
+    nord12: #D08770;
+    nord13: #EBCB8B;
+    nord14: #A3BE8C;
+    nord15: #B48EAD;
+
+    background: @nord0;
+    foreground: @nord4;
+    background-color: @background;
+    border-color:     @nord12;
+    bordercolor:      @border-color;
+    separatorcolor:   @border-color;
+    
+    normal-background: @background;
+    normal-foreground: @foreground;
+
+    active-background: @background;
+    active-foreground: @foreground;
+    
+    urgent-background: @background;
+    urgent-foreground: @foreground;
+    
+    selected-normal-background: @nord3;
+    selected-normal-foreground: @nord12;
+
+    selected-active-background: @nord3;
+    selected-active-foreground: @foreground;
+    
+    selected-urgent-background: @nord3;
+    selected-urgent-foreground: @nord11;
+    
+
+    /* No alternate colors */
+    alternate-normal-background: @normal-background;
+    alternate-normal-foreground: @normal-foreground;
+
+    alternate-active-background: @active-background;
+    alternate-active-foreground: @active-foreground;
+
+    alternate-urgent-background: @urgent-background;    
+    alternate-urgent-foreground: @urgent-foreground;
+    
+    spacing: 2;
+}

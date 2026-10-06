@@ -1,0 +1,71 @@
+! Project:    Mito Laser XResources
+! Version:    0.2.0
+
+! Mito Laser Colors
+#define Midnight_Blue_Darkest   #0a0714
+#define Midnight_Blue_Darker    #1a2a3a
+#define Midnight_Blue_Dark      #1f1658 
+#define Midnight_Blue           #2d227d
+#define Midnight_Blue_Light     #444b9b
+
+#define White_Smoke             #f3f3f3
+#define Light_Steel_Blue        #eceeee
+#define Light_Slate_Gray        #878fa9
+
+#define Dusk                    #6056de
+#define Dawn                    #c551a3
+
+#define Light_Coral             #f169a4
+#define Crimson                 #e7435a
+#define Old_Rose                #b82857 
+#define Sandy_Brown             #f8c836
+#define Dark_Turquoise          #3bacc3
+#define Medium_Turquoise        #50b1cd
+#define Slate_Blue              #4f51c1
+#define Dark_Slate_Blue         #44478f
+
+! Colors inspired by other sources
+#define Pale_Goldenrod          #eadea2
+#define Lime_Green              #56cc4d
+#define Medium_Spring_Green     #21f3bd
+#define Light_Sea_Green         #27bfb4
+
+! Colors 
+*.foreground: Medium_Turquoise
+*.background: Midnight_Blue
+*cursorColor: Crimson
+
+! Black + DarkGrey
+*color0:  Midnight_Blue_Dark
+*color8:  Midnight_Blue
+
+! DarkRed + Red
+*color1:  Old_Rose
+*color9:  Crimson
+
+! DarkGreen + Green
+*color2:  Lime_Green
+*color10: Medium_Spring_Green
+
+! DarkYellow + Yellow
+*color3:  Sandy_Brown
+*color11: Pale_Goldenrod
+
+! DarkBlue + Blue
+*color4:  Dark_Slate_Blue
+*color12: Slate_Blue
+
+! DarkMagenta + Magenta
+*color5:   Dusk
+*color13:  Dawn
+
+!DarkCyan + Cyan (both not tango)
+*color6:  Dark_Turquoise
+*color14: Medium_Turquoise
+
+! LightGrey + White
+*color7:  Light_Slate_Gray
+*color15: White_Smoke
+
+! Extra
+*color16: Orange_Ghost

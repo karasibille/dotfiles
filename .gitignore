@@ -1,0 +1,5 @@
+# Untracked secrets sourced by zshrc
+aliases/secrets/
+
+# Third-party polybar scripts
+polybar/polybar-scripts/
