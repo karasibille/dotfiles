@@ -46,3 +46,12 @@
 *color14: nord7
 *color15: nord6
 
+
+! Roles used by bin/theme
+theme.accent: nord15
+theme.selection: nord3
+theme.bar.background: nord4
+theme.bar.foreground: nord0
+theme.bar.foregroundAlt: nord3
+theme.bar.primary: nord15
+theme.bar.secondary: nord13

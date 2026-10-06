@@ -30,5 +30,5 @@ hide_when_typing = true
 # GENERAL
 # Import additional configuration files.
 import = [
-    "~/.config/alacritty/laser-theme.toml",
+    "~/.config/alacritty/theme.generated.toml", # bin/theme,
 ]

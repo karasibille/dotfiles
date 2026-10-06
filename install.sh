@@ -31,6 +31,7 @@ LINKS=(
     "ranger     | $CONFIG/ranger      | ranger"
     "kitty      | $CONFIG/kitty       | kitty"
     "alacritty  | $CONFIG/alacritty   | alacritty"
+    "bin/theme  | $HOME/.local/bin/theme | python3"
 )
 
 run() {
@@ -80,6 +81,12 @@ for entry in "${LINKS[@]}"; do
     fi
     link "$src" "$dst"
 done
+
+# Color files are generated, not versioned: create them on first install
+if [ ! -L "$DOTFILES/xrdb/current" ] && command -v python3 >/dev/null 2>&1; then
+    echo "theme    nord (first install)"
+    run "$DOTFILES/bin/theme" --no-reload nord
+fi
 
 [ "$DRY_RUN" = 1 ] && echo "Dry run: nothing was changed."
 exit 0

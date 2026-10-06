@@ -69,3 +69,12 @@
 
 ! Extra
 *color16: Orange_Ghost
+
+! Roles used by bin/theme
+theme.accent: Dawn
+theme.selection: Midnight_Blue_Light
+theme.bar.background: Midnight_Blue
+theme.bar.foreground: Medium_Turquoise
+theme.bar.foregroundAlt: Midnight_Blue
+theme.bar.primary: Dusk
+theme.bar.secondary: Dark_Turquoise

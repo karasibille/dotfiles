@@ -15,6 +15,23 @@ cd ~/Projects/github.com/karasibille/dotfiles
 programs installed on the machine. It can be run again at any time: existing
 files are moved to `<name>.bak.<date>`, never overwritten.
 
+## Color themes
+
+```sh
+theme          # pick a theme (rofi, also bound to $mod+Shift+t in i3)
+theme laser    # switch directly
+theme --list
+```
+
+Each theme is a single X resources file in `xrdb/colors/`. `theme` generates
+the color files of kitty, alacritty, rofi, dunst and polybar from it
+(`*.generated*`, not versioned), points `xrdb/current` to it and reloads the
+running programs; i3 reads the colors from xrdb.
+
+To add a theme, copy `xrdb/colors/nord` and change the colors: `background`,
+`foreground` and `color0`–`color15` are required, the `theme.*` roles
+(accent, bar colors…) are optional and listed in `bin/theme`.
+
 ## Machine-specific settings
 
 These files are sourced when present and are not versioned:

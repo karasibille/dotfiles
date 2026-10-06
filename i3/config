@@ -319,5 +319,8 @@ client.background       $background
 ## rofi bindings fancy application menu ($mod+d)
 bindsym $mod+d exec rofi -modi drun -show drun -config ~/.config/rofi/config.rasi
 
+## color theme picker
+bindsym $mod+Shift+t exec --no-startup-id ~/.local/bin/theme
+
 ## rofi bindings for window menu ($mod+Shift+d)
 bindsym $mod+Shift+D exec rofi -show window -config ~/.config/rofi/config.rasi
