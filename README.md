@@ -53,6 +53,26 @@ the theme's wallpaper (cached in `~/.cache/lock`, built when the theme
 changes and at i3 startup), or the theme's background color with a solid
 background or without ImageMagick. `LOCK_WALLPAPER` sets another source image.
 
+## Automatic lock
+
+`bin/autolock`, started by i3, is off unless `AUTOLOCK` is set in
+`~/.profile.local`:
+
+```sh
+export AUTOLOCK=presence     # or idle
+export AUTOLOCK_CHECK=20     # presence: seconds without input before a webcam check
+export AUTOLOCK_IDLE=600     # always: lock after this many seconds without input
+```
+
+In `presence` mode, after `AUTOLOCK_CHECK` seconds without keyboard or mouse
+input it looks at the webcam for about a second and locks if no face is seen,
+then checks again every `AUTOLOCK_CHECK` seconds while idle. Frames stay in
+memory and are never saved. Faces are detected with OpenCV's YuNet model
+(`share/autolock`, MIT licensed, OpenCV >= 4.8), or its Haar cascades on older
+OpenCV versions. If the webcam can't be read (e.g. busy in a video
+call), only `AUTOLOCK_IDLE` applies. `autolock --check` tests the detection
+once.
+
 ## Machine-specific settings
 
 These files are sourced when present and are not versioned:

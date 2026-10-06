@@ -1,0 +1,209 @@
+#!/usr/bin/env python3
+"""Lock the screen when nobody is in front of it.
+
+Started by i3, disabled unless AUTOLOCK is set (e.g. in ~/.profile.local):
+
+    AUTOLOCK=presence     after AUTOLOCK_CHECK seconds without keyboard or mouse
+                          input, look at the webcam for about a second and lock
+                          if no face is seen; check again every AUTOLOCK_CHECK
+                          seconds
+    AUTOLOCK=idle         only lock after AUTOLOCK_IDLE seconds of inactivity
+    AUTOLOCK_CHECK=20     seconds (presence mode)
+    AUTOLOCK_IDLE=600     seconds; always applies, also when the webcam can't
+                          be read (busy in a video call, unplugged…)
+    AUTOLOCK_CAMERA=0     webcam index (/dev/video0)
+
+Frames are only kept in memory for the detection and never written anywhere.
+Faces are detected with YuNet (OpenCV >= 4.8), else OpenCV 4 Haar cascades.
+
+    autolock          run (exits at once if AUTOLOCK is not set)
+    autolock --check  check the webcam once and print whether a face is seen
+"""
+import argparse
+import ctypes
+import ctypes.util
+import fcntl
+import os
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+LOCK = Path(__file__).resolve().parent / "lock"
+# MIT licensed, from https://github.com/opencv/opencv_zoo (share/autolock/LICENSE.yunet)
+YUNET = Path(__file__).resolve().parent.parent / "share" / "autolock" / "face_detection_yunet_2023mar.onnx"
+POLL = 2  # seconds between idle checks
+
+
+class XScreenSaverInfo(ctypes.Structure):
+    _fields_ = [
+        ("window", ctypes.c_ulong),
+        ("state", ctypes.c_int),
+        ("kind", ctypes.c_int),
+        ("til_or_since", ctypes.c_ulong),
+        ("idle", ctypes.c_ulong),
+        ("event_mask", ctypes.c_ulong),
+    ]
+
+
+class IdleTime:
+    """Seconds since the last keyboard or mouse input (X screensaver extension)."""
+
+    def __init__(self):
+        xlib = ctypes.cdll.LoadLibrary(ctypes.util.find_library("X11"))
+        self.xss = ctypes.cdll.LoadLibrary(ctypes.util.find_library("Xss"))
+        xlib.XOpenDisplay.restype = ctypes.c_void_p
+        xlib.XDefaultRootWindow.argtypes = [ctypes.c_void_p]
+        xlib.XDefaultRootWindow.restype = ctypes.c_ulong
+        self.xss.XScreenSaverAllocInfo.restype = ctypes.POINTER(XScreenSaverInfo)
+        self.xss.XScreenSaverQueryInfo.argtypes = [
+            ctypes.c_void_p, ctypes.c_ulong, ctypes.POINTER(XScreenSaverInfo)
+        ]
+        self.display = xlib.XOpenDisplay(None)
+        if not self.display:
+            sys.exit("autolock: cannot open the X display")
+        self.root = xlib.XDefaultRootWindow(self.display)
+        self.info = self.xss.XScreenSaverAllocInfo()
+
+    def __call__(self):
+        self.xss.XScreenSaverQueryInfo(self.display, self.root, self.info)
+        return self.info.contents.idle / 1000
+
+
+def detector():
+    """Return a function telling whether a frame contains a face.
+
+    YuNet (model in share/autolock, OpenCV >= 4.8), else the Haar cascades
+    shipped with OpenCV 4 (Ubuntu: opencv-data).
+    """
+    os.environ.setdefault("OPENCV_LOG_LEVEL", "ERROR")
+    try:
+        import cv2
+        import numpy as np
+    except ImportError:
+        sys.exit("autolock: OpenCV is missing (Arch: python-opencv, Ubuntu: python3-opencv)")
+
+    side = 640  # the model's fixed input size
+    try:
+        yunet = cv2.FaceDetectorYN_create(str(YUNET), "", (side, side), 0.5)
+        yunet.detect(np.zeros((side, side, 3), np.uint8))  # fails early if unsupported
+
+        def yunet_seen(frame):
+            # Keep the aspect ratio: a squashed face scores much lower
+            height, width = frame.shape[:2]
+            scale = side / max(height, width)
+            resized = cv2.resize(frame, (round(width * scale), round(height * scale)))
+            square = np.zeros((side, side, 3), np.uint8)
+            square[:resized.shape[0], :resized.shape[1]] = resized
+            _, faces = yunet.detect(square)
+            return faces is not None and len(faces) > 0
+
+        return yunet_seen
+    except (AttributeError, cv2.error):
+        pass
+
+    dirs = [getattr(getattr(cv2, "data", None), "haarcascades", ""),
+            "/usr/share/opencv4/haarcascades", "/usr/share/opencv/haarcascades"]
+    for d in dirs:
+        if d and Path(d, "haarcascade_frontalface_default.xml").is_file():
+            models = [cv2.CascadeClassifier(str(Path(d, name))) for name in
+                      ("haarcascade_frontalface_default.xml", "haarcascade_profileface.xml")]
+            break
+    else:
+        sys.exit("autolock: no usable face detector (Ubuntu: install opencv-data)")
+
+    def haar_seen(frame):
+        gray = cv2.equalizeHist(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY))
+        minimum = (gray.shape[0] // 8, gray.shape[0] // 8)
+        # The profile cascade only knows one side: also look at the mirrored image
+        return any(len(model.detectMultiScale(image, scaleFactor=1.1, minNeighbors=5, minSize=minimum))
+                   for image in (gray, cv2.flip(gray, 1)) for model in models)
+
+    return haar_seen
+
+
+def face_seen(camera, seen):
+    """True if a face is seen, False if not, None if the webcam can't be read."""
+    import cv2
+
+    capture = cv2.VideoCapture(camera, cv2.CAP_V4L2)
+    try:
+        if not capture.isOpened():
+            return None
+        frames = 0
+        for i in range(20):
+            ok, frame = capture.read()
+            if not ok:
+                continue
+            frames += 1
+            # Skip the first frames, often dark while the exposure adjusts,
+            # then look at every third one (~0.5 s): a face in any of them
+            # means someone is there, e.g. after turning their head back
+            if i >= 4 and i % 3 == 1 and seen(frame):
+                return True
+            del frame
+        return False if frames else None
+    finally:
+        capture.release()
+
+
+def locked():
+    return subprocess.run(["pgrep", "-x", "i3lock"], capture_output=True).returncode == 0
+
+
+def single_instance():
+    runtime = os.environ.get("XDG_RUNTIME_DIR", "/tmp")
+    handle = open(Path(runtime, "autolock.lock"), "w")
+    try:
+        fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        sys.exit(0)  # already running
+    return handle
+
+
+def run(mode, check, idle_limit, camera):
+    _lock = single_instance()
+    idle = IdleTime()
+    seen = detector() if mode == "presence" else None
+    last_check = None  # monotonic time of the last webcam check
+
+    while True:
+        time.sleep(POLL)
+        if locked():
+            last_check = None
+            continue
+
+        seconds = idle()
+        if seconds < min(check, idle_limit):
+            last_check = None
+            continue
+        if seconds >= idle_limit:
+            subprocess.run([str(LOCK)])
+            continue
+        if mode == "presence" and (last_check is None or time.monotonic() - last_check >= check):
+            last_check = time.monotonic()
+            if face_seen(camera, seen) is False:
+                subprocess.run([str(LOCK)])
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Lock the screen when nobody is in front of it.")
+    parser.add_argument("--check", action="store_true", help="take one frame and print the result")
+    args = parser.parse_args()
+
+    mode = os.environ.get("AUTOLOCK", "")
+    check = int(os.environ.get("AUTOLOCK_CHECK", "20"))
+    idle_limit = int(os.environ.get("AUTOLOCK_IDLE", "600"))
+    camera = int(os.environ.get("AUTOLOCK_CAMERA", "0"))
+
+    if args.check:
+        result = face_seen(camera, detector())
+        print({True: "face seen", False: "no face", None: "webcam unavailable"}[result])
+        return
+    if mode not in ("presence", "idle"):
+        return
+    run(mode, check, idle_limit, camera)
+
+
+if __name__ == "__main__":
+    main()

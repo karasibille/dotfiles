@@ -285,6 +285,9 @@ exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec_always feh --no-fehbg --bg-fill $HOME/.local/state/theme/wallpaper
 exec_always --no-startup-id ~/.local/bin/lock --prepare
 
+# Lock when nobody is in front of the screen, if AUTOLOCK is set (bin/autolock)
+exec --no-startup-id ~/.local/bin/autolock
+
 # set powersavings for display:
 exec --no-startup-id xset s off -dpms
 

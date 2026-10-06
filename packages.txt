@@ -13,6 +13,8 @@ python                         | python3                | bin/theme
 i3-wm                          | i3-wm                  | window manager
 i3lock                         | i3lock                 | bin/lock
 imagemagick                    | imagemagick            | bin/lock image
+python-opencv                  | python3-opencv         | bin/autolock face detection
+opencv                         | opencv-data            | bin/autolock face models
 polybar                        | polybar                | bar
 rofi                           | rofi                   | launcher, theme picker
 dunst                          | dunst                  | notifications

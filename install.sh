@@ -46,6 +46,7 @@ LINKS=(
     "gtk-3.0/gtk.css      | $CONFIG/gtk-3.0/gtk.css      | -"
     "bin/theme  | $HOME/.local/bin/theme | python3"
     "bin/lock   | $HOME/.local/bin/lock  | i3lock"
+    "bin/autolock | $HOME/.local/bin/autolock | python3"
 )
 
 run() {
