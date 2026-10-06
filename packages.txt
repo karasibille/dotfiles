@@ -1,0 +1,39 @@
+# Packages installed by ./install.sh --packages
+#
+# arch | ubuntu | what for
+#   aur:NAME  from the AUR, installed with yay or paru
+#   a/b       first one available (eza on Ubuntu 24.04, exa on 22.04)
+#   -         not packaged: install it by hand
+zsh                            | zsh                    | shell
+aur:antigen                    | zsh-antigen            | zsh plugins
+eza                            | eza/exa                | ls aliases
+neovim                         | neovim                 | editor
+git                            | git                    | -
+python                         | python3                | bin/theme
+i3-wm                          | i3-wm                  | window manager
+i3lock                         | i3lock                 | bin/lock
+imagemagick                    | imagemagick            | bin/lock image
+polybar                        | polybar                | bar
+rofi                           | rofi                   | launcher, theme picker
+dunst                          | dunst                  | notifications
+libnotify                      | libnotify-bin          | notify-send
+picom                          | picom                  | compositor
+feh                            | feh                    | wallpaper
+kitty                          | kitty                  | terminal
+xsettingsd                     | xsettingsd             | live GTK theme switch
+redshift                       | redshift               | screen color temperature
+ranger                         | ranger                 | file manager
+xorg-xrdb                      | x11-xserver-utils      | xrdb, xrandr
+xorg-xrandr                    | x11-xserver-utils      | xrandr
+xorg-setxkbmap                 | x11-xkb-utils          | compose key
+polkit-gnome                   | policykit-1-gnome      | authentication agent
+libpulse                       | pulseaudio-utils       | pactl
+xdg-utils                      | xdg-utils              | xdg-open
+adobe-source-code-pro-fonts    | -                      | Source Code Pro font
+noto-fonts                     | fonts-noto-core        | fonts
+noto-fonts-emoji               | fonts-noto-color-emoji | emoji
+adobe-source-han-sans-jp-fonts | fonts-noto-cjk         | workspace names (一二三)
+otf-font-awesome               | -                      | Font Awesome 7 (Ubuntu only has 4.7)
+capitaine-cursors              | -                      | cursor theme
+aur:nordic-theme               | -                      | Nordic GTK theme
+aur:paper-icon-theme           | paper-icon-theme       | Paper icon theme

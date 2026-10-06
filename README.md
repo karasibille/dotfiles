@@ -7,9 +7,15 @@ Kára's configuration files, used on Arch Linux (EndeavourOS, i3) and Ubuntu.
 ```sh
 git clone git@github.com:karasibille/dotfiles.git ~/Projects/github.com/karasibille/dotfiles
 cd ~/Projects/github.com/karasibille/dotfiles
-./install.sh --dry-run   # check what will change
-./install.sh
+./install.sh --packages --dry-run   # check what will change
+./install.sh --packages             # install missing packages, then link
 ```
+
+`--packages` installs what is missing from `packages.txt`, with pacman (and
+yay or paru for the AUR) on Arch, or apt on Ubuntu. It lists what has to be
+installed by hand: on Ubuntu, Source Code Pro, Font Awesome 7 (Ubuntu only
+packages 4.7), the capitaine cursors and the Nordic GTK theme. Without
+`--packages`, only the links are created.
 
 `install.sh` symlinks each config into `$HOME` / `~/.config`, only for the
 programs installed on the machine. It can be run again at any time: existing
