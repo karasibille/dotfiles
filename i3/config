@@ -32,9 +32,6 @@ workspace_layout default
 
 set $border_size 4
 
-#border indicator on windows:
-new_window pixel 1
-
 default_border pixel $border_size
 
 # hide_edge_borders none|vertical|horizontal|both|smart
@@ -86,7 +83,8 @@ bindsym $mod+Shift+0 move container to workspace $ws10
 # keybindings for different actions: #
 ######################################
 
-set $term kitty
+# i3-sensible-terminal uses $TERMINAL, then kitty, alacritty… whichever is installed
+set $term i3-sensible-terminal
 set $locker i3lock -i ~/Pictures/wallpaper.lock.png -f
 
 # start a terminal
@@ -253,14 +251,15 @@ set $ws10 "10:十"
 #############################################
 
 # get auth work with polkit-gnome
-exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+# (Arch: /usr/lib/polkit-gnome, Ubuntu: /usr/lib/policykit-1-gnome)
+exec --no-startup-id sh -c 'for a in /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1; do [ -x "$a" ] && exec "$a"; done'
 
 # start a script to setup displays
 # uncomment the next line, use arandr to setup displays and save the file as monitor:
 # exec --no-startup-id ~/.screenlayout/monitor.sh
 
 # set the compose key with xkbmap
-exec setxkbmap -option compose:rctrl
+exec --no-startup-id setxkbmap -option compose:rctrl
 
 # transparency
 # uncomment one of them to be used (picom package is installed per default)
@@ -284,7 +283,6 @@ exec_always feh --bg-fill $HOME/Pictures/wallpaper.current
 exec --no-startup-id xset s off -dpms
 
 # Autostart some apps
-exec --no-startup-id sleep 1 && /usr/lib/geoclue-2.0/demos/agent
 exec --no-startup-id sleep 1 && redshift
 
 # set floating (nontiling)for apps needing it
@@ -296,7 +294,7 @@ for_window [class="Pavucontrol" instance="pavucontrol"] floating enable
 ######################################
 
 # Define colors variables:
-set_from_resource   $background i3wm.backround  #2E3440
+set_from_resource   $background i3wm.background  #2E3440
 set_from_resource   $text       i3wm.foreground #E5E9F0
 set_from_resource   $indicator  i3wm.color5     #B48EAD
 
@@ -321,5 +319,5 @@ client.background       $background
 ## rofi bindings fancy application menu ($mod+d)
 bindsym $mod+d exec rofi -modi drun -show drun -config ~/.config/rofi/config.rasi
 
-## rofi bindings for window menu ($mod+t)
+## rofi bindings for window menu ($mod+Shift+d)
 bindsym $mod+Shift+D exec rofi -show window -config ~/.config/rofi/config.rasi

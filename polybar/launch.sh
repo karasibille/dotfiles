@@ -7,9 +7,9 @@ uid=$(id -u)
 # Wait until the processes have been shut down
 while pgrep -u $uid -x polybar >/dev/null; do sleep 1; done
 
-# Launch bar1 and bar2
-MONITOR=eDP1 polybar top &
-MONITOR=DP1 polybar top &
-MONITOR=HDMI-1-0 polybar top &
+# Launch one bar per connected monitor
+for m in $(polybar --list-monitors | cut -d: -f1); do
+    MONITOR=$m polybar top &
+done
 
 echo "Bars launched..."

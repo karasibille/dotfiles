@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# exec "pacmd list-cards" to get the name of the card and the profiles you want to switch.
-CARD_NAME="alsa_card.pci-0000_00_1f.3"
+# exec "pactl list cards" to get the name of the card and the profiles you want to switch.
+# Override with PA_CARD on other machines.
+CARD_NAME="${PA_CARD:-alsa_card.pci-0000_00_1f.3}"
 
 PROFILES=(
     output:analog-stereo+input:analog-stereo
@@ -61,10 +62,9 @@ function parse_options {
 }
 
 function getActiveProfile {
-    active_profile=$(pacmd list-cards | grep 'active profile')
-    tmp=${active_profile#*<}
-
-    echo ${tmp%>*}
+    pactl list cards | awk -v card="$CARD_NAME" '
+        $1 == "Name:" { current = ($2 == card) }
+        current && /Active Profile:/ { print $3; exit }'
 }
 
 function getProfileIndex () {
@@ -115,7 +115,7 @@ function setProfile () {
         profile=$(getPreviousProfile $profile)
     fi
 
-    pacmd set-card-profile $CARD_NAME $profile
+    pactl set-card-profile "$CARD_NAME" "$profile"
     echo $profile
 }
 
