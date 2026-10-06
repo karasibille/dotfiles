@@ -63,9 +63,6 @@ These files are sourced when present and are not versioned:
 | `~/.zshrc.local`            | zsh settings, aliases                 |
 | `~/.config/aliases/secrets/`| aliases containing tokens or passwords|
 
-`PA_CARD` sets the sound card used by the polybar `pa-switch` module
-(`pactl list cards short`).
-
 ## Content
 
 | Directory     | Program                                   |

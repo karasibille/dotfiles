@@ -1,22 +1,10 @@
 color = ${colors.red}
 type = internal/cpu
 
-; Seconds to sleep between updates
-; Default: 1
 interval = 1
 
-; Available tags:
-;   <label> (default)
-;   <bar-load>
-;   <ramp-load>
-;   <ramp-coreload>
 format = <label>
-;format-underline = ${self.color}
 
-; Available tokens:
-;   %percentage% (default) - total cpu load
-;   %percentage-cores% - load percentage for each core
-;   %percentage-core[1-9]% - load percentage for specific core
 label =  %percentage%%
 
 format-prefix = " "
