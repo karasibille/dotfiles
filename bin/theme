@@ -2,8 +2,8 @@
 """Switch the color theme of every tool at once.
 
 A theme is an X resources file in xrdb/colors/. Its colors are written to a
-generated file for each tool (kitty, alacritty, rofi, dunst, polybar), then the
-running programs are reloaded.
+generated file for each tool (kitty, alacritty, rofi, dunst, polybar), its GTK
+theme to xsettingsd, then the running programs are reloaded.
 
     theme               pick a theme (rofi, or a prompt in a terminal)
     theme NAME          switch to NAME
@@ -19,8 +19,13 @@ Besides background, foreground, cursorColor and color0-15, a theme can set
     theme.bar.foregroundAlt  polybar secondary text (color8)
     theme.bar.primary        polybar highlights (color5)
     theme.bar.secondary      polybar secondary highlights (color3)
+    theme.gtk                GTK theme name (gtk-theme-name of gtk-3.0/settings.ini)
+
+GTK applications switch theme live when xsettingsd is installed; otherwise only
+newly started ones use gtk-3.0/settings.ini.
 """
 import argparse
+import configparser
 import os
 import re
 import shutil
@@ -32,6 +37,8 @@ DOTFILES = Path(__file__).resolve().parent.parent
 THEMES = DOTFILES / "xrdb" / "colors"
 # Symlink to the active theme, included by Xresources
 CURRENT = DOTFILES / "xrdb" / "current"
+GTK_SETTINGS = DOTFILES / "gtk-3.0" / "settings.ini"
+XSETTINGSD = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "xsettingsd" / "xsettingsd.conf"
 
 OPTIONAL = {
     "cursor": ("cursorColor", "foreground"),
@@ -201,29 +208,65 @@ def parse(path):
         # "*color0: nord1", "*.foreground: X", "theme.accent: X"
         elif m := re.match(r"\*?\.?([\w.]+)\s*:\s*(\S+)", line):
             resources[m[1]] = defines.get(m[2], m[2])
-    return {k: v for k, v in resources.items() if re.fullmatch(r"#[0-9a-fA-F]{6}", v)}
+    return resources
 
 
-def palette(name):
-    resources = parse(THEMES / name)
+def is_color(value):
+    return bool(value and re.fullmatch(r"#[0-9a-fA-F]{6}", value))
+
+
+def palette(resources, name):
     required = ["background", "foreground"] + [f"color{i}" for i in range(16)]
-    missing = [key for key in required if key not in resources]
+    missing = [key for key in required if not is_color(resources.get(key))]
     if missing:
         sys.exit(f"theme {name}: missing or invalid colors: {', '.join(missing)}")
 
     colors = {key: resources[key] for key in required}
     for key, (resource, fallback) in OPTIONAL.items():
-        colors[key] = resources.get(resource, colors[fallback])
+        value = resources.get(resource)
+        colors[key] = value if is_color(value) else colors[fallback]
     return colors
 
 
+def gtk_themes():
+    dirs = [Path.home() / ".themes", Path.home() / ".local/share/themes", Path("/usr/share/themes")]
+    return {p.name for d in dirs if d.is_dir() for p in d.iterdir()}
+
+
+def gtk_settings(resources, name):
+    """GTK settings for xsettingsd: settings.ini, with the theme's GTK theme."""
+    ini = configparser.ConfigParser(interpolation=None)
+    ini.read(GTK_SETTINGS)
+    defaults = ini["Settings"] if ini.has_section("Settings") else {}
+
+    settings = {
+        "Net/ThemeName": resources.get("theme.gtk", defaults.get("gtk-theme-name")),
+        "Net/IconThemeName": defaults.get("gtk-icon-theme-name"),
+        "Gtk/CursorThemeName": defaults.get("gtk-cursor-theme-name"),
+        "Gtk/FontName": defaults.get("gtk-font-name"),
+    }
+    gtk_theme = settings["Net/ThemeName"]
+    if gtk_theme and gtk_theme not in gtk_themes():
+        print(f"theme {name}: GTK theme {gtk_theme!r} is not installed", file=sys.stderr)
+    return {key: value for key, value in settings.items() if value}
+
+
 def generate(name):
-    colors = palette(name)
+    resources = parse(THEMES / name)
+    colors = palette(resources, name)
     header = HEADER.format(name=name)
     for target, template in TEMPLATES.items():
         path = DOTFILES / target
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(template.format(header=header, **colors))
+
+    # Outside the repository: xsettingsd has no config to version
+    settings = gtk_settings(resources, name)
+    XSETTINGSD.parent.mkdir(parents=True, exist_ok=True)
+    XSETTINGSD.write_text(
+        f"# {header}\n" + "".join(f'{key} "{value}"\n' for key, value in settings.items())
+    )
+    colors["gtk"] = settings.get("Net/ThemeName")
 
     if CURRENT.is_symlink() or CURRENT.exists():
         CURRENT.unlink()
@@ -257,7 +300,21 @@ def reload():
         run("pkill", "-USR1", "-x", "kitty")
     if running("dunst"):
         run("dunstctl", "reload")
+    reload_gtk()
     # alacritty reloads its imported files by itself
+
+
+def reload_gtk():
+    # xsettingsd pushes the new GTK theme to running applications
+    if running("xsettingsd"):
+        run("pkill", "-HUP", "-x", "xsettingsd")
+    elif os.environ.get("DISPLAY") and shutil.which("xsettingsd"):
+        subprocess.Popen(
+            ["xsettingsd"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
 
 
 def notify(name, colors):
@@ -266,6 +323,8 @@ def notify(name, colors):
         return
     swatches = ["".join(f'<span foreground="{colors[f"color{i}"]}">██</span>' for i in row)
                 for row in (range(8), range(8, 16))]
+    if colors.get("gtk"):
+        swatches.append(f"GTK: {colors['gtk']}")
     run(
         "notify-send",
         "--app-name=theme",

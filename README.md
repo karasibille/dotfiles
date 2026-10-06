@@ -26,7 +26,10 @@ theme --list
 Each theme is a single X resources file in `xrdb/colors/`. `theme` generates
 the color files of kitty, alacritty, rofi, dunst and polybar from it
 (`*.generated*`, not versioned), points `xrdb/current` to it and reloads the
-running programs; i3 reads the colors from xrdb.
+running programs; i3 reads the colors from xrdb. The theme's GTK theme
+(`theme.gtk`) is sent to running GTK applications through
+[xsettingsd](https://github.com/derat/xsettingsd) when it is installed;
+otherwise new applications use `gtk-3.0/settings.ini`.
 
 To add a theme, copy `xrdb/colors/nord` and change the colors: `background`,
 `foreground` and `color0`–`color15` are required, the `theme.*` roles
@@ -57,5 +60,6 @@ These files are sourced when present and are not versioned:
 | `dunst/`      | notifications                             |
 | `kitty/`, `alacritty/` | terminals                        |
 | `picom/`      | compositor                                |
+| `gtk-3.0/`    | GTK 3 theme, icons, font                  |
 | `xrdb/`, `Xresources` | Nord and Laser color themes       |
 | `redshift/`, `ranger/`, `fontconfig/`, `npmrc` | misc     |

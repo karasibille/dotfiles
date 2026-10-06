@@ -32,6 +32,8 @@ LINKS=(
     "kitty      | $CONFIG/kitty       | kitty"
     "alacritty  | $CONFIG/alacritty   | alacritty"
     "picom/picom.conf     | $CONFIG/picom.conf           | picom"
+    "gtk-3.0/settings.ini | $CONFIG/gtk-3.0/settings.ini | -"
+    "gtk-3.0/gtk.css      | $CONFIG/gtk-3.0/gtk.css      | -"
     "bin/theme  | $HOME/.local/bin/theme | python3"
 )
 
