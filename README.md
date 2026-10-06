@@ -31,9 +31,21 @@ running programs; i3 reads the colors from xrdb. The theme's GTK theme
 [xsettingsd](https://github.com/derat/xsettingsd) when it is installed;
 otherwise new applications use `gtk-3.0/settings.ini`.
 
+`theme.wallpaper` sets the theme's wallpaper (e.g.
+`theme.wallpaper: ~/Pictures/wallpapers/nord.png`); without it, or if the
+image is missing, the background is the theme's background color. Wallpapers
+are not versioned: copy them to each machine.
+
 To add a theme, copy `xrdb/colors/nord` and change the colors: `background`,
 `foreground` and `color0`–`color15` are required, the `theme.*` roles
 (accent, bar colors…) are optional and listed in `bin/theme`.
+
+## Screen lock
+
+`$mod+l` runs `lock` (`bin/lock`): i3lock with a blurred, darkened copy of
+the theme's wallpaper (cached in `~/.cache/lock`, built when the theme
+changes and at i3 startup), or the theme's background color with a solid
+background or without ImageMagick. `LOCK_WALLPAPER` sets another source image.
 
 ## Machine-specific settings
 

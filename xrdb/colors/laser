@@ -79,3 +79,5 @@ theme.bar.foregroundAlt: Midnight_Blue
 theme.bar.primary: Dusk
 theme.bar.secondary: Dark_Turquoise
 theme.gtk: Nordic
+! Not versioned, see README
+theme.wallpaper: ~/Pictures/wallpapers/laser.jpg

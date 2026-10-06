@@ -3,7 +3,8 @@
 
 A theme is an X resources file in xrdb/colors/. Its colors are written to a
 generated file for each tool (kitty, alacritty, rofi, dunst, polybar), its GTK
-theme to xsettingsd, then the running programs are reloaded.
+theme to xsettingsd, its wallpaper is set, then the running programs are
+reloaded.
 
     theme               pick a theme (rofi, or a prompt in a terminal)
     theme NAME          switch to NAME
@@ -20,17 +21,23 @@ Besides background, foreground, cursorColor and color0-15, a theme can set
     theme.bar.primary        polybar highlights (color5)
     theme.bar.secondary      polybar secondary highlights (color3)
     theme.gtk                GTK theme name (gtk-theme-name of gtk-3.0/settings.ini)
+    theme.wallpaper          wallpaper image, ~ allowed (solid background color)
 
 GTK applications switch theme live when xsettingsd is installed; otherwise only
 newly started ones use gtk-3.0/settings.ini.
+
+The wallpaper in use is the symlink ~/.local/state/theme/wallpaper, also read
+by i3 at startup and by bin/lock. Wallpapers are not versioned.
 """
 import argparse
 import configparser
 import os
 import re
 import shutil
+import struct
 import subprocess
 import sys
+import zlib
 from pathlib import Path
 
 DOTFILES = Path(__file__).resolve().parent.parent
@@ -39,6 +46,9 @@ THEMES = DOTFILES / "xrdb" / "colors"
 CURRENT = DOTFILES / "xrdb" / "current"
 GTK_SETTINGS = DOTFILES / "gtk-3.0" / "settings.ini"
 XSETTINGSD = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "xsettingsd" / "xsettingsd.conf"
+STATE = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local" / "state")) / "theme"
+# Symlink to the wallpaper in use (image of the theme or solid color)
+WALLPAPER = STATE / "wallpaper"
 
 OPTIONAL = {
     "cursor": ("cursorColor", "foreground"),
@@ -205,8 +215,8 @@ def parse(path):
         line = line.strip()
         if m := re.match(r"#define\s+(\S+)\s+(\S+)", line):
             defines[m[1]] = m[2]
-        # "*color0: nord1", "*.foreground: X", "theme.accent: X"
-        elif m := re.match(r"\*?\.?([\w.]+)\s*:\s*(\S+)", line):
+        # "*color0: nord1", "*.foreground: X", "theme.wallpaper: ~/a b.png"
+        elif m := re.match(r"\*?\.?([\w.]+)\s*:\s*(.+?)\s*$", line):
             resources[m[1]] = defines.get(m[2], m[2])
     return resources
 
@@ -251,6 +261,39 @@ def gtk_settings(resources, name):
     return {key: value for key, value in settings.items() if value}
 
 
+def solid_png(color, path):
+    """Write a 1x1 PNG of color; feh --bg-fill stretches it to the screen."""
+    def chunk(kind, data):
+        return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data))
+
+    pixel = bytes.fromhex(color[1:])
+    path.write_bytes(
+        b"\x89PNG\r\n\x1a\n"
+        + chunk(b"IHDR", struct.pack(">IIBBBBB", 1, 1, 8, 2, 0, 0, 0))
+        + chunk(b"IDAT", zlib.compress(b"\x00" + pixel))
+        + chunk(b"IEND", b"")
+    )
+
+
+def set_wallpaper(resources, colors, name):
+    """Point WALLPAPER to the theme's image, or to a solid background color."""
+    STATE.mkdir(parents=True, exist_ok=True)
+    image = resources.get("theme.wallpaper")
+    if image:
+        image = Path(image).expanduser()
+        if not image.is_file():
+            print(f"theme {name}: wallpaper {str(image)!r} not found, using a solid color", file=sys.stderr)
+            image = None
+    if not image:
+        image = STATE / f"solid-{colors['background'][1:].lower()}.png"
+        solid_png(colors["background"], image)
+
+    if WALLPAPER.is_symlink() or WALLPAPER.exists():
+        WALLPAPER.unlink()
+    WALLPAPER.symlink_to(image)
+    return image
+
+
 def generate(name):
     resources = parse(THEMES / name)
     colors = palette(resources, name)
@@ -267,6 +310,7 @@ def generate(name):
         f"# {header}\n" + "".join(f'{key} "{value}"\n' for key, value in settings.items())
     )
     colors["gtk"] = settings.get("Net/ThemeName")
+    colors["wallpaper"] = set_wallpaper(resources, colors, name)
 
     if CURRENT.is_symlink() or CURRENT.exists():
         CURRENT.unlink()
@@ -302,6 +346,15 @@ def reload():
     if running("dunst"):
         run("dunstctl", "reload")
     reload_gtk()
+    if os.environ.get("DISPLAY"):
+        run("feh", "--no-fehbg", "--bg-fill", str(WALLPAPER))
+        # Build the lock image now so the next lock is instant
+        subprocess.Popen(
+            [str(DOTFILES / "bin" / "lock"), "--prepare"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
     # alacritty reloads its imported files by itself
 
 
@@ -326,6 +379,8 @@ def notify(name, colors):
                 for row in (range(8), range(8, 16))]
     if colors.get("gtk"):
         swatches.append(f"GTK: {colors['gtk']}")
+    if not colors["wallpaper"].name.startswith("solid-"):
+        swatches.append(f"Wallpaper: {colors['wallpaper'].name}")
     run(
         "notify-send",
         "--app-name=theme",

@@ -85,7 +85,8 @@ bindsym $mod+Shift+0 move container to workspace $ws10
 
 # First installed terminal; doesn't rely on $TERMINAL, which i3 only sees after a re-login
 set $term exec "$(command -v kitty || command -v alacritty || echo i3-sensible-terminal)"
-set $locker i3lock -i ~/Pictures/wallpaper.lock.png -f
+# Blurred wallpaper, or the theme background color (bin/lock)
+set $locker ~/.local/bin/lock
 
 # start a terminal
 bindsym $mod+Return exec $term
@@ -279,8 +280,10 @@ exec --no-startup-id xsettingsd
 # Polybar
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 
-# set wallpaper
-exec_always feh --bg-fill $HOME/Pictures/wallpaper.current
+# set the theme's wallpaper (bin/theme), and build the lock image from it so
+# locking is instant
+exec_always feh --no-fehbg --bg-fill $HOME/.local/state/theme/wallpaper
+exec_always --no-startup-id ~/.local/bin/lock --prepare
 
 # set powersavings for display:
 exec --no-startup-id xset s off -dpms

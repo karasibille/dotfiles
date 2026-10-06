@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+#
+# Lock the screen with a blurred copy of the theme's wallpaper (bin/theme),
+# or with the background color of the active theme when there is no
+# wallpaper or ImageMagick is not installed.
+#
+#   lock            lock the screen (extra arguments are passed to i3lock)
+#   lock --prepare  only build the lock image, so the first lock is instant
+#
+# The image is cached in ~/.cache/lock and rebuilt when the wallpaper or the
+# screen size changes.
+set -u
+
+WALLPAPER="${LOCK_WALLPAPER:-${XDG_STATE_HOME:-$HOME/.local/state}/theme/wallpaper}"
+CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/lock"
+
+# ImageMagick 7 (Arch) or 6 (Ubuntu)
+if command -v magick >/dev/null 2>&1; then
+    IM=magick
+elif command -v convert >/dev/null 2>&1; then
+    IM=convert
+else
+    IM=
+fi
+
+# Size of the X screen, all monitors included (e.g. 1920x1080)
+screen_size() {
+    xrandr | awk '/current/ { gsub(",", ""); print $8 "x" $10; exit }'
+}
+
+# Print the path of the lock image, building it if needed
+lock_image() {
+    [ -n "$IM" ] && [ -f "$WALLPAPER" ] || return 1
+    # Solid color wallpaper (bin/theme): i3lock -c does the same, for free
+    case "$(basename "$(readlink -f "$WALLPAPER")")" in solid-*) return 1 ;; esac
+
+    local size image tmp
+    size=$(screen_size)
+    [ -n "$size" ] || return 1
+    # The wallpaper is usually a symlink: key on the target and its date
+    image="$CACHE/$(readlink -f "$WALLPAPER" | md5sum | cut -c1-8)-$(stat -L -c %Y "$WALLPAPER")-$size.png"
+
+    if [ ! -f "$image" ]; then
+        mkdir -p "$CACHE"
+        tmp="$image.tmp.png"
+        # Cover the screen, blur (downscale/upscale is much faster than -blur
+        # on a large image) and darken so the indicator stays readable
+        "$IM" "$WALLPAPER" -resize "$size^" -gravity center -extent "$size" \
+            -scale 10% -blur 0x2 -resize "$size!" \
+            -fill black -colorize 25% "$tmp" || { rm -f "$tmp"; return 1; }
+        find "$CACHE" -name '*.png' ! -name "$(basename "$image")" ! -name "$(basename "$tmp")" -delete
+        mv "$tmp" "$image"
+    fi
+    echo "$image"
+}
+
+# Background color of the active theme (bin/theme), without the leading #
+theme_color() {
+    xrdb -query 2>/dev/null |
+        awk '$1 == "*background:" || $1 == "*.background:" { sub("#", "", $2); print $2; exit }'
+}
+
+if [ "${1:-}" = "--prepare" ]; then
+    lock_image >/dev/null
+    exit
+fi
+
+if image=$(lock_image); then
+    exec i3lock -f -i "$image" "$@"
+else
+    color=$(theme_color)
+    exec i3lock -f -c "${color:-000000}" "$@"
+fi
