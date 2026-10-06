@@ -31,6 +31,7 @@ LINKS=(
     "ranger     | $CONFIG/ranger      | ranger"
     "kitty      | $CONFIG/kitty       | kitty"
     "alacritty  | $CONFIG/alacritty   | alacritty"
+    "picom/picom.conf     | $CONFIG/picom.conf           | picom"
     "bin/theme  | $HOME/.local/bin/theme | python3"
 )
 

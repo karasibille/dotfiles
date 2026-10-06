@@ -56,5 +56,6 @@ These files are sourced when present and are not versioned:
 | `rofi/`       | launcher                                  |
 | `dunst/`      | notifications                             |
 | `kitty/`, `alacritty/` | terminals                        |
+| `picom/`      | compositor                                |
 | `xrdb/`, `Xresources` | Nord and Laser color themes       |
 | `redshift/`, `ranger/`, `fontconfig/`, `npmrc` | misc     |
