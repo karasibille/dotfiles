@@ -286,10 +286,11 @@ def run(*command):
 def reload():
     if os.environ.get("DISPLAY"):
         run("xrdb", "-load", str(Path.home() / ".Xresources"))
-    # i3 reloads its colors from xrdb and relaunches polybar (exec_always)
+    # i3 reloads its colors from xrdb
     if running("i3"):
         run("i3-msg", "reload")
-    elif running("polybar"):
+    # A reload doesn't run i3's exec_always, so polybar is relaunched here
+    if running("polybar"):
         subprocess.Popen(
             [str(DOTFILES / "polybar" / "launch.sh")],
             stdout=subprocess.DEVNULL,
