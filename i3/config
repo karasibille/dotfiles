@@ -83,8 +83,8 @@ bindsym $mod+Shift+0 move container to workspace $ws10
 # keybindings for different actions: #
 ######################################
 
-# i3-sensible-terminal uses $TERMINAL, then kitty, alacritty… whichever is installed
-set $term i3-sensible-terminal
+# First installed terminal; doesn't rely on $TERMINAL, which i3 only sees after a re-login
+set $term exec "$(command -v kitty || command -v alacritty || echo i3-sensible-terminal)"
 set $locker i3lock -i ~/Pictures/wallpaper.lock.png -f
 
 # start a terminal
