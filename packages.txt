@@ -32,6 +32,7 @@ autorandr                      | autorandr              | monitor profiles
 xorg-setxkbmap                 | x11-xkb-utils          | compose key
 polkit-gnome                   | policykit-1-gnome      | authentication agent
 libpulse                       | pulseaudio-utils       | pactl
+pavucontrol                    | pavucontrol            | sound devices (polybar right click)
 xdg-utils                      | xdg-utils              | xdg-open
 adobe-source-code-pro-fonts    | -                      | Source Code Pro font (./install-fonts.sh)
 ttf-fira-code                  | fonts-firacode         | rofi font (Fira Code)

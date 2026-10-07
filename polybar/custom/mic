@@ -1,0 +1,12 @@
+color = ${colors.blue}
+type = custom/script
+
+; Follows the default microphone; restarted after 2 s if pactl stops
+exec = ~/.config/polybar/custom/scripts/mic.sh
+tail = true
+interval = 2
+
+click-left = pactl set-source-mute @DEFAULT_SOURCE@ toggle
+click-right = pavucontrol --tab=4 &
+
+format-foreground = ${self.color}

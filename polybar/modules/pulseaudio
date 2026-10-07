@@ -3,6 +3,9 @@ type = internal/pulseaudio
 
 use-ui-max = false
 
+; Left click mutes; right click opens pavucontrol to pick the output device
+click-right = pavucontrol --tab=3 &
+
 format-volume = <ramp-volume> <label-volume>
 
 format-muted = <label-muted>
