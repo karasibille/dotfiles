@@ -15,9 +15,9 @@ format = <ramp> <label>
 
 format-warn = <ramp> <label-warn>
 
-label = %temperature-c% °C
+label = %temperature-c%°C
 
-label-warn = %temperature-c% °C
+label-warn = %temperature-c%°C
 
 ramp-0 = 
 ramp-1 = 
