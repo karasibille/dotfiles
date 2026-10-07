@@ -17,6 +17,18 @@ done
 has-p10k() { [[ -f ~/.p10k.zsh ]] }
 no-p10k() { ! has-p10k }
 
+# The yarn plugin runs `yarn global bin` (~500 ms) to add it to PATH: it is
+# ~/.local/bin (the npm prefix, see ~/.npmrc), already in PATH
+zstyle ':omz:plugins:yarn' global-path false
+
+# Compile the plugins and the static plugin file: ~40 ms faster to load
+zstyle ':antidote:bundle:*' zcompile 'yes'
+zstyle ':antidote:static' zcompile 'yes'
+
+# zsh-autosuggestions rebinds every widget before each prompt (~25 ms); all
+# plugins are loaded by the first prompt, so binding once then is enough
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+
 # Plugins listed in ~/.zsh_plugins.txt (zsh_plugins.txt in the dotfiles)
 (( $+functions[antidote] )) && antidote load
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
