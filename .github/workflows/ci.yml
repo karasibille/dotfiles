@@ -9,7 +9,7 @@ jobs:
   lint:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install the linters, zsh and i3
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends shellcheck zsh i3-wm
@@ -47,10 +47,10 @@ jobs:
           if command -v pacman >/dev/null; then
             pacman -Syu --noconfirm git zsh python
           else
-            apt-get update && apt-get install -y --no-install-recommends git zsh python3
+            apt-get update && apt-get install -y --no-install-recommends ca-certificates git zsh python3
           fi
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Packages (dry run)
         run: ./install.sh --packages --dry-run
