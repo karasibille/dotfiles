@@ -150,16 +150,17 @@ white   = "{color15}"
     normal-background: @background;
     normal-foreground: @foreground;
     active-background: @background;
-    active-foreground: {color4};
+    active-foreground: {accent};
     urgent-background: @background;
     urgent-foreground: {color1};
 
-    selected-normal-background: {selection};
-    selected-normal-foreground: {accent};
-    selected-active-background: {selection};
-    selected-active-foreground: {color4};
-    selected-urgent-background: {selection};
-    selected-urgent-foreground: {color1};
+    /* The selected entry inverts the colors, like polybar's focused workspace */
+    selected-normal-background: {accent};
+    selected-normal-foreground: {background};
+    selected-active-background: {accent};
+    selected-active-foreground: {background};
+    selected-urgent-background: {color1};
+    selected-urgent-foreground: {background};
 
     /* No alternate colors */
     alternate-normal-background: @normal-background;
