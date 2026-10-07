@@ -33,6 +33,7 @@ polkit-gnome                   | policykit-1-gnome      | authentication agent
 libpulse                       | pulseaudio-utils       | pactl
 xdg-utils                      | xdg-utils              | xdg-open
 adobe-source-code-pro-fonts    | -                      | Source Code Pro font
+ttf-fira-code                  | fonts-firacode         | rofi font (Fira Code)
 noto-fonts                     | fonts-noto-core        | fonts
 noto-fonts-emoji               | fonts-noto-color-emoji | emoji
 adobe-source-han-sans-jp-fonts | fonts-noto-cjk         | workspace names (一二三)

@@ -3,7 +3,7 @@
 //----------------------
 
 configuration {
-    font:       "Fire Code 11";
+    font:       "Fira Code 11";
     matching:   "fuzzy";
     icon-theme: "Arc-X-D";
     show-icons: true;
