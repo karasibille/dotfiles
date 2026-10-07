@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the linters, zsh and i3
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends shellcheck zsh i3-wm
+
+      # Scripts are found by their shebang, so new ones are checked too
+      - name: shellcheck
+        run: |
+          git ls-files -z | xargs -0 grep -lE '^#!.*\b(ba|da)?sh\b' --null 2>/dev/null \
+            | xargs -0 shellcheck
+
+      - name: ruff
+        run: |
+          git ls-files -z | xargs -0 grep -lE '^#!.*\bpython3?\b' --null 2>/dev/null \
+            | xargs -0 pipx run ruff==0.16.10 check
+
+      - name: zsh syntax
+        run: |
+          for f in zshrc aliases/*; do
+            zsh -n "$f" || exit 1
+          done
+
+      - name: i3 config
+        run: i3 -C -c i3/config
+
+  install:
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [archlinux:latest, ubuntu:24.04, ubuntu:22.04]
+    runs-on: ubuntu-24.04
+    container: ${{ matrix.image }}
+    steps:
+      - name: Install the base tools
+        run: |
+          if command -v pacman >/dev/null; then
+            pacman -Syu --noconfirm git zsh python
+          else
+            apt-get update && apt-get install -y --no-install-recommends git zsh python3
+          fi
+
+      - uses: actions/checkout@v4
+
+      - name: Packages (dry run)
+        run: ./install.sh --packages --dry-run
+
+      - name: Links
+        run: ./install.sh
+
+      # A second run must find everything in place
+      - name: Links again
+        run: |
+          ./install.sh | tee second-run
+          if grep -vE '^(ok|skip) ' second-run; then
+            echo "install.sh is not idempotent" >&2
+            exit 1
+          fi
+
+      - name: zsh starts without errors
+        run: |
+          test "$(readlink ~/.zshrc)" = "$PWD/zshrc"
+          zsh -i -c exit 2>zsh-errors
+          if [ -s zsh-errors ]; then
+            cat zsh-errors >&2
+            exit 1
+          fi
