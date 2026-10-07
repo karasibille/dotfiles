@@ -13,7 +13,7 @@ bottom = false
 fixed-center = true
 
 width = 100%
-; Keep in sync with gaps top in i3/config (height + outer gap)
+; Keep in sync with gaps top in i3/config (height + edge gap - inner gap)
 height = 32
 
 offset-x = 0

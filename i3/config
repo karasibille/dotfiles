@@ -38,18 +38,20 @@ default_border pixel $border_size
 hide_edge_borders smart
 
 
-# Set inner/outer gaps
-gaps inner 15
-gaps outer 20
+# Gaps: 32 px between windows, 16 px to the screen edges. i3 adds the outer
+# gap to the inner one at the edges, hence a negative outer gap (16 - 32).
+gaps inner 32
+gaps outer -16
 # The top gap also holds polybar (height 32 in polybar/bars/top), which is
 # override-redirect: the space stays reserved while the bar restarts (theme
-# change, screen change), so windows don't move
-gaps top 52
+# change, screen change), so windows don't move. Bar height + 16 px edge -
+# 32 px inner gap.
+gaps top 16
 
-bindsym $mod+minus       gaps inner all minus 5
-bindsym $mod+plus        gaps inner all plus  5
-bindsym $mod+Shift+minus gaps outer all minus 5
-bindsym $mod+Shift+plus  gaps outer all plus  5
+bindsym $mod+minus       gaps inner all minus 4
+bindsym $mod+plus        gaps inner all plus  4
+bindsym $mod+Shift+minus gaps outer all minus 4
+bindsym $mod+Shift+plus  gaps outer all plus  4
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
