@@ -8,11 +8,10 @@ prepend_path() {
 }
 
 prepend_path "$HOME/bin"
-prepend_path "$HOME/.npm-global/bin" # npm prefix, see ~/.npmrc
 prepend_path "$HOME/.cargo/bin"
 prepend_path "$HOME/.symfony/bin"
 prepend_path "$HOME/go/bin"
-prepend_path "$HOME/.local/bin"
+prepend_path "$HOME/.local/bin" # also the npm prefix, see ~/.npmrc
 export PATH
 unset -f prepend_path
 
