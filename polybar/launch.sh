@@ -20,9 +20,22 @@ for card in /sys/class/backlight/*; do
 done
 export BATTERY ADAPTER BACKLIGHT
 
-# Launch one bar per connected monitor
-for m in $(polybar --list-monitors | cut -d: -f1); do
-    MONITOR=$m polybar top &
+# The full bar on the primary monitor (the first one if none is primary), the
+# secondary bar on the others. Lines look like "eDP1: 1920x1080+0+0 (primary)".
+monitors=$(polybar --list-monitors)
+primary=$(echo "$monitors" | grep '(primary)' | cut -d: -f1)
+[ -n "$primary" ] || primary=$(echo "$monitors" | head -n 1 | cut -d: -f1)
+
+# The backlight module is only useful while the laptop panel is on
+main=top-nobacklight
+echo "$monitors" | grep -qE '^(eDP|LVDS|DSI)' && main=top
+
+for m in $(echo "$monitors" | cut -d: -f1); do
+    if [ "$m" = "$primary" ]; then
+        MONITOR=$m polybar "$main" &
+    else
+        MONITOR=$m polybar secondary &
+    fi
 done
 
 echo "Bars launched..."

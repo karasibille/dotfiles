@@ -1,6 +1,7 @@
 type = internal/i3
 
-pin-workspaces = false
+; Each bar only shows the workspaces of its monitor
+pin-workspaces = true
 
 strip-wsnumbers = true
 

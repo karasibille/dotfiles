@@ -1,0 +1,6 @@
+; Monitors other than the primary one: their workspaces and the time
+inherit = bar/top
+
+modules-left = i3
+modules-center = date
+modules-right =

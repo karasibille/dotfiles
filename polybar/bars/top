@@ -37,5 +37,6 @@ font-4 = Noto Sans CJK JP:style=Bold:pixelsize=11;1
 
 modules-left = i3
 modules-center = date
+; Same list without backlight in bar/top-nobacklight (config.ini)
 modules-right = info-redshift-temp backlight volume xkeyboard memory cpu temperature battery powermenu
 
