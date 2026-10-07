@@ -26,6 +26,7 @@ Besides background, foreground, cursorColor and color0-15, a theme can set
     theme.bar.focusedForeground
                              polybar focused workspace name (theme.bar.background)
                              By default the focused workspace inverts the others.
+    theme.bar.urgent         polybar urgent workspace background (color1)
     theme.bar.red, .green, .yellow, .blue, .purple, .cyan
                              polybar module colors (color1 to color6)
     theme.gtk                GTK theme name (gtk-theme-name of gtk-3.0/settings.ini)
@@ -209,7 +210,8 @@ secondary = {bar_secondary}
 focused = {bar_focused}
 focused-foreground = {bar_focused_foreground}
 workspaces = {bar_workspaces}
-urgent = {color1}
+urgent = {bar_urgent}
+urgent-foreground = {bar_background}
 """,
 }
 
@@ -255,6 +257,7 @@ def palette(resources, name):
         ("bar_workspaces", "theme.bar.workspaces", "bar_foreground"),
         ("bar_focused", "theme.bar.focused", "bar_workspaces"),
         ("bar_focused_foreground", "theme.bar.focusedForeground", "bar_background"),
+        ("bar_urgent", "theme.bar.urgent", "color1"),
     ):
         value = resources.get(resource)
         colors[key] = value if is_color(value) else colors[fallback]

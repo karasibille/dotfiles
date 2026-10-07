@@ -78,6 +78,7 @@ theme.bar.background: Midnight_Blue_Dark
 theme.bar.foreground: Pale_Goldenrod
 ! The focused workspace inverts these colors (bin/theme)
 theme.bar.workspaces: Light_Coral
+theme.bar.urgent: Sandy_Brown
 theme.bar.foregroundAlt: Midnight_Blue
 theme.bar.primary: Dusk
 theme.bar.secondary: Dawn

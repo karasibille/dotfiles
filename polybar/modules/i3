@@ -34,6 +34,7 @@ label-visible-foreground = ${colors.workspaces}
 label-visible-padding = ${self.label-mode-padding}
 
 label-urgent = %name%
-label-urgent-foreground = ${colors.foreground-alt}
-label-urgent-background = ${colors.primary}
+; Inverted like the focused workspace, on the urgent color
+label-urgent-foreground = ${colors.urgent-foreground}
+label-urgent-background = ${colors.urgent}
 label-urgent-padding = ${self.label-mode-padding}
