@@ -67,9 +67,6 @@
 *color7:  Light_Slate_Gray
 *color15: White_Smoke
 
-! Extra
-*color16: Orange_Ghost
-
 ! Roles used by bin/theme
 theme.accent: Dawn
 theme.selection: Midnight_Blue_Light
