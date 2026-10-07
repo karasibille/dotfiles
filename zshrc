@@ -21,6 +21,15 @@ no-p10k() { ! has-p10k }
 (( $+functions[antidote] )) && antidote load
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
+# Without ~/.p10k.zsh powerlevel10k isn't loaded: load it on demand so that
+# `p10k configure` can create that file
+if (( ! $+functions[p10k] && $+functions[antidote] )); then
+    p10k() {
+        unfunction p10k
+        source "$(antidote path romkatv/powerlevel10k)/powerlevel10k.zsh-theme" && p10k "$@"
+    }
+fi
+
 (( $+commands[thefuck] )) && eval "$(thefuck --alias)"
 (( $+commands[rbenv] )) && eval "$(rbenv init - zsh)"
 
