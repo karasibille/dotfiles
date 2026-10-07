@@ -39,4 +39,7 @@ for f in ~/.config/aliases/*(N.) ~/.config/aliases/secrets/*(N.); do
 done
 
 # Machine-specific settings, not versioned
-[ -f ~/.zshrc.local ] && source ~/.zshrc.local
+# (an if, so that the first prompt does not start with a failed status)
+if [ -f ~/.zshrc.local ]; then
+    source ~/.zshrc.local
+fi
