@@ -32,12 +32,12 @@ xorg-setxkbmap                 | x11-xkb-utils          | compose key
 polkit-gnome                   | policykit-1-gnome      | authentication agent
 libpulse                       | pulseaudio-utils       | pactl
 xdg-utils                      | xdg-utils              | xdg-open
-adobe-source-code-pro-fonts    | -                      | Source Code Pro font
+adobe-source-code-pro-fonts    | -                      | Source Code Pro font (./install-fonts.sh)
 ttf-fira-code                  | fonts-firacode         | rofi font (Fira Code)
 noto-fonts                     | fonts-noto-core        | fonts
 noto-fonts-emoji               | fonts-noto-color-emoji | emoji
 adobe-source-han-sans-jp-fonts | fonts-noto-cjk         | workspace names (一二三)
-otf-font-awesome               | -                      | Font Awesome 7 (Ubuntu only has 4.7)
+otf-font-awesome               | -                      | Font Awesome 7, Ubuntu only has 4.7 (./install-fonts.sh)
 capitaine-cursors              | -                      | cursor theme
 aur:nordic-theme               | -                      | Nordic GTK theme
 aur:paper-icon-theme           | paper-icon-theme       | Paper icon theme

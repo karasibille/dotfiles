@@ -17,6 +17,10 @@ installed by hand: on Ubuntu, Source Code Pro, Font Awesome 7 (Ubuntu only
 packages 4.7), the capitaine cursors and the Nordic GTK theme. Without
 `--packages`, only the links are created.
 
+On Ubuntu, `./install-fonts.sh` installs Source Code Pro and Font Awesome 7
+into `~/.local/share/fonts` (`--dry-run` to check first). It skips the fonts
+fontconfig already knows, and checks the archives against pinned checksums.
+
 `install.sh` symlinks each config into `$HOME` / `~/.config`, only for the
 programs installed on the machine. It can be run again at any time: existing
 files are moved to `<name>.bak.<date>`, never overwritten.
