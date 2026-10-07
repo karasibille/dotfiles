@@ -148,12 +148,13 @@ def face_seen(camera, seen):
 
 
 def locked():
-    return subprocess.run(["pgrep", "-x", "i3lock"], capture_output=True).returncode == 0
+    return subprocess.run(["pgrep", "-x", "i3lock"], capture_output=True, check=False).returncode == 0
 
 
 def single_instance():
     runtime = os.environ.get("XDG_RUNTIME_DIR", "/tmp")
-    handle = open(Path(runtime, "autolock.lock"), "w")
+    # Kept open for the life of the process: the lock is the open file
+    handle = open(Path(runtime, "autolock.lock"), "w")  # noqa: SIM115
     try:
         fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except BlockingIOError:
@@ -178,12 +179,12 @@ def run(mode, check, idle_limit, camera):
             last_check = None
             continue
         if seconds >= idle_limit:
-            subprocess.run([str(LOCK)])
+            subprocess.run([str(LOCK)], check=False)
             continue
         if mode == "presence" and (last_check is None or time.monotonic() - last_check >= check):
             last_check = time.monotonic()
             if face_seen(camera, seen) is False:
-                subprocess.run([str(LOCK)])
+                subprocess.run([str(LOCK)], check=False)
 
 
 def main():

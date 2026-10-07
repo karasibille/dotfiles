@@ -65,6 +65,7 @@ trim() {
 }
 
 # Package manager helpers: installed / available in the repositories
+# shellcheck source=/dev/null
 case "$(. /etc/os-release && echo " ${ID:-} ${ID_LIKE:-} ")" in
     *" arch "*) DISTRO=arch ;;
     *" ubuntu "* | *" debian "*) DISTRO=ubuntu ;;
@@ -155,7 +156,8 @@ link() {
         echo "relink   $dst (was -> $(readlink "$dst"))"
         run rm "$dst"
     elif [ -e "$dst" ]; then
-        local backup="$dst.bak.$(date +%Y%m%d%H%M%S)"
+        local backup
+        backup="$dst.bak.$(date +%Y%m%d%H%M%S)"
         echo "backup   $dst -> $backup"
         run mv "$dst" "$backup"
     else
