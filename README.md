@@ -18,7 +18,8 @@ packages 4.7), the capitaine cursors and the Nordic GTK theme. Without
 `--packages`, only the links are created.
 
 On Ubuntu, `./install-fonts.sh` installs Source Code Pro and Font Awesome 7
-into `~/.local/share/fonts` (`--dry-run` to check first). It skips the fonts
+into `~/.local/share/fonts` (`--dry-run` to check first), and Source Han Sans
+JP if neither it nor Noto Sans CJK JP is installed. It skips the fonts
 fontconfig already knows, and checks the archives against pinned checksums.
 
 `install.sh` symlinks each config into `$HOME` / `~/.config`, only for the
