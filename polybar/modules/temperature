@@ -3,9 +3,9 @@ type = internal/temperature
 
 interval = 1
 
-thermal-zone = 3
-
-hwmon-path = /sys/devices/pci0000:00/0000:00:1d.6/0000:3e:00.0/hwmon/hwmon6/temp1_input
+; CPU package sensor, found by type: zone and hwmon numbers vary between boots
+; and machines
+zone-type = x86_pkg_temp
 
 warn-temperature = 80
 

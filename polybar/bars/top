@@ -37,20 +37,5 @@ font-4 = Noto Sans CJK JP:style=Bold:pixelsize=11;1
 
 modules-left = i3
 modules-center = date
-modules-right = info-redshift-temp xbacklight volume xkeyboard memory cpu temperature battery powermenu
+modules-right = info-redshift-temp backlight volume xkeyboard memory cpu temperature battery powermenu
 
-dim-value = 1.0
-
-enable-ipc = false
-
-click-left =
-click-middle =
-click-right =
-scroll-up =
-scroll-down =
-double-click-left =
-double-click-middle =
-double-click-right =
-
-cursor-click =
-cursor-scroll =

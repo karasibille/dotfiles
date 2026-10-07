@@ -14,8 +14,10 @@ cd ~/Projects/github.com/karasibille/dotfiles
 `--packages` installs what is missing from `packages.txt`, with pacman (and
 yay or paru for the AUR) on Arch, or apt on Ubuntu. It lists what has to be
 installed by hand: on Ubuntu, Source Code Pro, Font Awesome 7 (Ubuntu only
-packages 4.7), the capitaine cursors and the Nordic GTK theme. Without
-`--packages`, only the links are created.
+packages 4.7), the capitaine cursors and the Nordic GTK theme. It also
+installs `udev/90-backlight.rules` and adds you to the `video` group, so that
+scrolling on the polybar brightness module can change it (after a new login).
+Without `--packages`, only the links are created.
 
 On Ubuntu, `./install-fonts.sh` installs Source Code Pro and Font Awesome 7
 into `~/.local/share/fonts` (`--dry-run` to check first), and Source Han Sans

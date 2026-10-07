@@ -4,7 +4,8 @@
 #
 #   ./install.sh             create the links
 #   ./install.sh --packages  first install the missing packages (packages.txt),
-#                            with pacman/yay on Arch or apt on Ubuntu
+#                            with pacman/yay on Arch or apt on Ubuntu, and the
+#                            backlight udev rule (udev/)
 #   ./install.sh --dry-run   only show what would be done (with or without
 #                            --packages)
 #
@@ -168,7 +169,31 @@ link() {
     run ln -s "$src" "$dst"
 }
 
-[ "$PACKAGES" = 1 ] && install_packages
+# System side, with --packages as it needs sudo: let the video group change
+# the brightness (polybar backlight module). The rule is copied, not linked:
+# udev may run before /home is mounted.
+setup_system() {
+    local rule=/etc/udev/rules.d/90-backlight.rules user=${USER:-$(id -un)}
+    if cmp -s "$DOTFILES/udev/90-backlight.rules" "$rule"; then
+        echo "ok       $rule"
+    else
+        echo "install  $rule"
+        run sudo install -m 644 "$DOTFILES/udev/90-backlight.rules" "$rule"
+        run sudo udevadm trigger --subsystem-match=backlight --action=add
+    fi
+
+    if id -nG "$user" | grep -qw video; then
+        echo "ok       $user in the video group"
+    else
+        echo "group    add $user to video (effective at the next login)"
+        run sudo usermod -aG video "$user"
+    fi
+}
+
+if [ "$PACKAGES" = 1 ]; then
+    install_packages
+    setup_system
+fi
 
 for entry in "${LINKS[@]}"; do
     IFS='|' read -r src dst cmd <<< "$entry"

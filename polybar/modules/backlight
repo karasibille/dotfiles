@@ -1,18 +1,14 @@
+color = ${colors.blue}
 type = internal/backlight
 
-card = intel_backlight
+; Detected by launch.sh (intel_backlight, amdgpu_bl0…)
+card = ${env:BACKLIGHT:intel_backlight}
+
+; Scrolling writes to /sys: needs udev/90-backlight.rules and the video group
+enable-scroll = true
 
 format = <label>
+format-prefix = " "
+format-prefix-foreground = ${self.color}
 
-label =  %percentage%%
-
-ramp-0 = 🌕
-ramp-1 = 🌔
-ramp-2 = 🌓
-ramp-3 = 🌒
-ramp-4 = 🌑
-
-bar-width = 10
-bar-indicator = |
-bar-fill = ─
-bar-empty = ─
+label = %percentage%%

@@ -3,8 +3,9 @@ type = internal/battery
 
 full-at = 97
 
-battery = BAT1
-adapter = AC
+; Detected by launch.sh
+battery = ${env:BATTERY:BAT0}
+adapter = ${env:ADAPTER:AC}
 
 poll-interval = 5
 
