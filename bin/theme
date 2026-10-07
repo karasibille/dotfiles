@@ -21,7 +21,11 @@ Besides background, foreground, cursorColor and color0-15, a theme can set
     theme.bar.foregroundAlt  polybar secondary text (color8)
     theme.bar.primary        polybar highlights (color5)
     theme.bar.secondary      polybar secondary highlights (color3)
-    theme.bar.focused        polybar focused workspace background (theme.bar.foreground)
+    theme.bar.workspaces     polybar names of the other workspaces (theme.bar.foreground)
+    theme.bar.focused        polybar focused workspace background (theme.bar.workspaces)
+    theme.bar.focusedForeground
+                             polybar focused workspace name (theme.bar.background)
+                             By default the focused workspace inverts the others.
     theme.bar.red, .green, .yellow, .blue, .purple, .cyan
                              polybar module colors (color1 to color6)
     theme.gtk                GTK theme name (gtk-theme-name of gtk-3.0/settings.ini)
@@ -203,6 +207,8 @@ cyan = {bar_cyan}
 primary = {bar_primary}
 secondary = {bar_secondary}
 focused = {bar_focused}
+focused-foreground = {bar_focused_foreground}
+workspaces = {bar_workspaces}
 urgent = {color1}
 """,
 }
@@ -243,8 +249,15 @@ def palette(resources, name):
     for key, (resource, fallback) in OPTIONAL.items():
         value = resources.get(resource)
         colors[key] = value if is_color(value) else colors[fallback]
-    focused = resources.get("theme.bar.focused")
-    colors["bar_focused"] = focused if is_color(focused) else colors["bar_foreground"]
+    # Roles falling back to another role rather than to an X resource
+    # In order: the focused workspace inverts the others by default
+    for key, resource, fallback in (
+        ("bar_workspaces", "theme.bar.workspaces", "bar_foreground"),
+        ("bar_focused", "theme.bar.focused", "bar_workspaces"),
+        ("bar_focused_foreground", "theme.bar.focusedForeground", "bar_background"),
+    ):
+        value = resources.get(resource)
+        colors[key] = value if is_color(value) else colors[fallback]
 
     opacity = resources.get("theme.bar.opacity", "80")
     if not opacity.isdigit() or int(opacity) > 100:

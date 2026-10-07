@@ -54,6 +54,8 @@ theme.bar.background: nord4
 theme.bar.foreground: nord0
 theme.bar.foregroundAlt: nord3
 theme.bar.primary: nord15
+! Focused workspace name in purple rather than the inverted bar color
+theme.bar.focusedForeground: nord15
 theme.bar.secondary: nord13
 theme.gtk: Nordic
 ! Not versioned, see README

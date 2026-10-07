@@ -22,14 +22,15 @@ label-mode-padding = 2
 
 label-focused = %name%
 label-focused-background = ${colors.focused}
-label-focused-foreground = ${colors.primary}
+label-focused-foreground = ${colors.focused-foreground}
 label-focused-padding = ${self.label-mode-padding}
 
 label-unfocused = %name%
-label-unfocused-foreground = ${colors.foreground}
+label-unfocused-foreground = ${colors.workspaces}
 label-unfocused-padding = ${self.label-mode-padding}
 
 label-visible = %name%
+label-visible-foreground = ${colors.workspaces}
 label-visible-padding = ${self.label-mode-padding}
 
 label-urgent = %name%
