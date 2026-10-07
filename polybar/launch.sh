@@ -1,5 +1,11 @@
 #!/usr/bin/env sh
 
+# One launch at a time: i3 and autorandr's postswitch hook may both run this
+# at startup, which would start the bars twice. The bars don't inherit the
+# lock (9>&-), so it is released when this script exits.
+exec 9>"${XDG_RUNTIME_DIR:-/tmp}/polybar-launch.lock"
+flock 9
+
 # Terminate already running bar instances
 killall -q polybar
 
@@ -32,9 +38,9 @@ echo "$monitors" | grep -qE '^(eDP|LVDS|DSI)' && main=top
 
 for m in $(echo "$monitors" | cut -d: -f1); do
     if [ "$m" = "$primary" ]; then
-        MONITOR=$m polybar "$main" &
+        MONITOR=$m polybar "$main" 9>&- &
     else
-        MONITOR=$m polybar secondary &
+        MONITOR=$m polybar secondary 9>&- &
     fi
 done
 

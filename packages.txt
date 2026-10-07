@@ -28,6 +28,7 @@ redshift                       | redshift               | screen color temperatu
 ranger                         | ranger                 | file manager
 xorg-xrdb                      | x11-xserver-utils      | xrdb, xrandr
 xorg-xrandr                    | x11-xserver-utils      | xrandr
+autorandr                      | autorandr              | monitor profiles
 xorg-setxkbmap                 | x11-xkb-utils          | compose key
 polkit-gnome                   | policykit-1-gnome      | authentication agent
 libpulse                       | pulseaudio-utils       | pactl

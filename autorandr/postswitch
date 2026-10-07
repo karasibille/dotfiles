@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# Run by autorandr after it switches to a saved profile, when a monitor is
+# plugged or unplugged (udev, autorandr.service) or at i3 startup. Programs
+# are started through i3 so that they belong to the session rather than to
+# autorandr's system service.
+
+i3-msg -q 'exec --no-startup-id ~/.config/polybar/launch.sh'
+# The wallpaper and the lock image (bin/lock) follow the new screen size
+i3-msg -q 'exec --no-startup-id feh --no-fehbg --bg-fill ~/.local/state/theme/wallpaper'
+i3-msg -q 'exec --no-startup-id ~/.local/bin/lock --prepare'

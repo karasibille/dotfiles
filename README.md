@@ -56,6 +56,29 @@ To add a theme, copy `xrdb/colors/nord` and change the colors: `background`,
 `foreground` and `color0`–`color15` are required, the `theme.*` roles
 (accent, bar colors…) are optional and listed in `bin/theme`.
 
+## Monitors
+
+[autorandr](https://github.com/phillipberndt/autorandr) applies a saved
+layout when the connected screens change (udev rule of the package) and at
+i3 startup. Save one profile per place, once the screens are arranged (e.g.
+with `arandr`):
+
+```sh
+autorandr --save mobile     # laptop alone
+autorandr --save home       # on the home dock
+autorandr                   # list the profiles, the current one is marked
+```
+
+Monitors are matched by their EDID, not their output name
+(`autorandr/settings.ini`): the same screen is `DP1` or `DP-1-0` depending on
+the GPU it goes through. Profiles are per machine and not versioned
+(`~/.config/autorandr/<name>/`). After each switch, `autorandr/postswitch`
+restarts polybar (full bar on the primary monitor, workspaces and time on the
+others) and resets the wallpaper and the lock image to the new screen size.
+
+To also switch when the lid is closed or opened:
+`sudo systemctl enable --now autorandr-lid-listener`.
+
 ## Screen lock
 
 `$mod+l` runs `lock` (`bin/lock`): i3lock with a blurred, darkened copy of
@@ -92,6 +115,7 @@ These files are sourced when present and are not versioned:
 | `~/.profile.local`          | environment variables, extra `PATH`   |
 | `~/.zshrc.local`            | zsh settings, aliases                 |
 | `~/.config/aliases/secrets/`| aliases containing tokens or passwords|
+| `~/.config/autorandr/<name>/`| monitor profiles (`autorandr --save`) |
 | `~/.p10k.zsh`               | powerlevel10k prompt instead of fwalch (`p10k configure`) |
 
 ## Content
@@ -108,4 +132,5 @@ These files are sourced when present and are not versioned:
 | `picom/`      | compositor                                |
 | `gtk-3.0/`    | GTK 3 theme, icons, font                  |
 | `xrdb/`, `Xresources` | Nord and Laser color themes       |
+| `autorandr/`  | monitor profiles: options and hook        |
 | `redshift/`, `ranger/`, `fontconfig/`, `npmrc` | misc     |

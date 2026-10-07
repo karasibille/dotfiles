@@ -255,9 +255,9 @@ set $ws10 "10:十"
 # (Arch: /usr/lib/polkit-gnome, Ubuntu: /usr/lib/policykit-1-gnome)
 exec --no-startup-id sh -c 'for a in /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1; do [ -x "$a" ] && exec "$a"; done'
 
-# start a script to setup displays
-# uncomment the next line, use arandr to setup displays and save the file as monitor:
-# exec --no-startup-id ~/.screenlayout/monitor.sh
+# Monitors: apply the saved autorandr profile matching the connected screens
+# (autorandr --save <name>); its postswitch hook restarts polybar
+exec --no-startup-id autorandr --change
 
 # set the compose key with xkbmap
 exec --no-startup-id setxkbmap -option compose:rctrl

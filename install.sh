@@ -40,6 +40,8 @@ LINKS=(
     "rofi       | $CONFIG/rofi        | rofi"
     "dunst      | $CONFIG/dunst       | dunst"
     "redshift   | $CONFIG/redshift    | redshift"
+    "autorandr/settings.ini | $CONFIG/autorandr/settings.ini | autorandr"
+    "autorandr/postswitch   | $CONFIG/autorandr/postswitch   | autorandr"
     "ranger     | $CONFIG/ranger      | ranger"
     "kitty      | $CONFIG/kitty       | kitty"
     "alacritty  | $CONFIG/alacritty   | alacritty"
