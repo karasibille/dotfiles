@@ -74,8 +74,9 @@
 ! Roles used by bin/theme
 theme.accent: Dawn
 theme.selection: Midnight_Blue_Light
-theme.bar.background: Midnight_Blue_Dark
-theme.bar.foreground: Pale_Goldenrod
+theme.bar.background: Midnight_Blue_Deep
+theme.bar.opacity: 90
+theme.bar.foreground: Light_Steel_Blue
 ! The focused workspace inverts these colors (bin/theme)
 theme.bar.workspaces: Light_Coral
 theme.bar.urgent: Sandy_Brown
