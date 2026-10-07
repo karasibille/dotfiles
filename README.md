@@ -21,6 +21,9 @@ On Ubuntu, `./install-fonts.sh` installs Source Code Pro and Font Awesome 7
 into `~/.local/share/fonts` (`--dry-run` to check first), and Source Han Sans
 JP if neither it nor Noto Sans CJK JP is installed. It skips the fonts
 fontconfig already knows, and checks the archives against pinned checksums.
+`./install-themes.sh` does the same for the Nordic GTK theme
+(`~/.local/share/themes`) and the capitaine cursors (`~/.icons`, the only
+user directory X11 reads cursors from).
 
 `install.sh` symlinks each config into `$HOME` / `~/.config`, only for the
 programs installed on the machine. It can be run again at any time: existing

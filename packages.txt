@@ -38,6 +38,6 @@ noto-fonts                     | fonts-noto-core        | fonts
 noto-fonts-emoji               | fonts-noto-color-emoji | emoji
 adobe-source-han-sans-jp-fonts | fonts-noto-cjk         | workspace names (一二三)
 otf-font-awesome               | -                      | Font Awesome 7, Ubuntu only has 4.7 (./install-fonts.sh)
-capitaine-cursors              | -                      | cursor theme
-aur:nordic-theme               | -                      | Nordic GTK theme
+capitaine-cursors              | -                      | cursor theme (./install-themes.sh)
+aur:nordic-theme               | -                      | Nordic GTK theme (./install-themes.sh)
 aur:paper-icon-theme           | paper-icon-theme       | Paper icon theme
