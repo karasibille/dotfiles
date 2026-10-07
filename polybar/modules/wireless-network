@@ -1,6 +1,7 @@
 color = ${colors.blue}
 type = internal/network
-interface = wlp58s0
+; First wireless interface (wlan0, wlp58s0… depending on the machine)
+interface-type = wireless
 
 interval = 5.0
 
@@ -8,11 +9,11 @@ accumulate-stats = true
 
 unknown-as-up = false
 
-format-connected = <ramp-signal> <label-connected>
+; Click: nmtui, in the first installed terminal (as $term in i3/config)
+format-connected = %{A1:sh -c 'exec "$(command -v kitty || command -v alacritty || echo i3-sensible-terminal)" -e nmtui' &:}<ramp-signal> <label-connected>%{A}
 
-format-disconnected = <label-disconnected>
+format-disconnected = %{A1:sh -c 'exec "$(command -v kitty || command -v alacritty || echo i3-sensible-terminal)" -e nmtui' &:}<label-disconnected>%{A}
 
-format-packetloss = <animation-packetloss> <label-connected>
 
 label-connected = %essid%
 

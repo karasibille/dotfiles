@@ -1,0 +1,15 @@
+color = ${colors.blue}
+type = internal/network
+; First wired interface (the dock's, when docked)
+interface-type = wired
+
+interval = 5.0
+
+; Click: nmtui, in the first installed terminal (as $term in i3/config)
+format-connected = %{A1:sh -c 'exec "$(command -v kitty || command -v alacritty || echo i3-sensible-terminal)" -e nmtui' &:}<label-connected>%{A}
+format-connected-prefix = " "
+format-connected-prefix-foreground = ${self.color}
+label-connected = %local_ip%
+
+; Hidden when no cable is plugged in
+format-disconnected =
