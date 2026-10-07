@@ -259,8 +259,10 @@ exec --no-startup-id sh -c 'for a in /usr/lib/polkit-gnome/polkit-gnome-authenti
 # (autorandr --save <name>); its postswitch hook restarts polybar
 exec --no-startup-id autorandr --change
 
-# set the compose key with xkbmap
-exec --no-startup-id setxkbmap -option compose:rctrl
+# Compose key on right Ctrl. X drops it when it detects a keyboard again
+# (plugged in, dock, resume from suspend): exec_always so that $mod+Shift+r
+# restores it; the lasting fix is system-wide, see the README (Keyboard)
+exec_always --no-startup-id setxkbmap -option compose:rctrl
 
 # transparency
 # uncomment one of them to be used (picom package is installed per default)

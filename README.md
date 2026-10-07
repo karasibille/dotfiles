@@ -79,6 +79,23 @@ others) and resets the wallpaper and the lock image to the new screen size.
 To also switch when the lid is closed or opened:
 `sudo systemctl enable --now autorandr-lid-listener`.
 
+## Keyboard
+
+The compose key is right Ctrl, set by i3 at startup (and `$mod+Shift+r`) with
+`setxkbmap -option compose:rctrl`. X forgets it whenever it detects a keyboard
+again: a keyboard or dock plugged in, or the laptop resuming from suspend. To
+keep it, set it in the system X11 keyboard configuration, which X applies to
+every keyboard it detects:
+
+```sh
+localectl status    # check the current layout first, and keep it below
+sudo localectl set-x11-keymap us pc105 "" compose:rctrl
+```
+
+This writes `/etc/X11/xorg.conf.d/00-keyboard.conf`. It is not done by
+`install.sh`: the layout and model are per machine, and the command replaces
+the whole system keyboard configuration.
+
 ## Screen lock
 
 `$mod+l` runs `lock` (`bin/lock`): i3lock with a blurred, darkened copy of
