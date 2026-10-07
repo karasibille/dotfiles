@@ -1,4 +1,9 @@
 type = custom/script
 
 exec = ~/.config/polybar/custom/scripts/redshift.sh
-interval = 60
+; Runs continuously, refreshing itself; restarted after 5 s if it stops
+tail = true
+interval = 5
+
+; Toggle redshift on and off
+click-left = kill -USR1 %pid%
