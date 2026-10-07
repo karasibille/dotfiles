@@ -2,13 +2,18 @@ monitor = ${env:MONITOR:eDP1}
 
 monitor-strict = false
 
-override-redirect = false
+; Not managed by i3: its space is reserved by i3's top gap (i3/config), so
+; windows don't move when the bar restarts. wm-restack keeps it under
+; fullscreen windows.
+override-redirect = true
+wm-restack = i3
 
 bottom = false
 
 fixed-center = true
 
 width = 100%
+; Keep in sync with gaps top in i3/config (height + outer gap)
 height = 32
 
 offset-x = 0
@@ -40,3 +45,6 @@ modules-center = date
 ; Same list without backlight in bar/top-nobacklight (config.ini)
 modules-right = info-redshift-temp backlight volume mic wired-network wireless-network xkeyboard memory cpu temperature battery powermenu
 
+
+; polybar-msg: bin/theme restarts the bars in place on a theme change
+enable-ipc = true

@@ -41,6 +41,10 @@ hide_edge_borders smart
 # Set inner/outer gaps
 gaps inner 15
 gaps outer 20
+# The top gap also holds polybar (height 32 in polybar/bars/top), which is
+# override-redirect: the space stays reserved while the bar restarts (theme
+# change, screen change), so windows don't move
+gaps top 52
 
 bindsym $mod+minus       gaps inner all minus 5
 bindsym $mod+plus        gaps inner all plus  5
