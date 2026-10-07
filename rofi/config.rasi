@@ -5,7 +5,7 @@
 configuration {
     font:       "Fira Code 11";
     matching:   "fuzzy";
-    icon-theme: "Arc-X-D";
+    icon-theme: "Paper";
     show-icons: true;
 }
 
