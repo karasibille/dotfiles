@@ -82,12 +82,13 @@ These files are sourced when present and are not versioned:
 | `~/.profile.local`          | environment variables, extra `PATH`   |
 | `~/.zshrc.local`            | zsh settings, aliases                 |
 | `~/.config/aliases/secrets/`| aliases containing tokens or passwords|
+| `~/.p10k.zsh`               | powerlevel10k prompt instead of fwalch (`p10k configure`) |
 
 ## Content
 
 | Directory     | Program                                   |
 |---------------|-------------------------------------------|
-| `zshrc`, `aliases/` | zsh + [antigen](https://github.com/zsh-users/antigen) / oh-my-zsh |
+| `zshrc`, `zsh_plugins.txt`, `aliases/` | zsh + [antidote](https://github.com/mattmc3/antidote) / oh-my-zsh |
 | `profile`     | login environment                         |
 | `i3/`         | i3 window manager                         |
 | `polybar/`    | status bar                                |

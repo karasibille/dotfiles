@@ -1,0 +1,39 @@
+# zsh plugins, loaded by antidote (zshrc). After a change, open a new shell;
+# `antidote update` updates the plugins.
+
+# Oh My Zsh: set up its dependencies first
+getantidote/use-omz
+
+# Completion (compinit is run by use-omz): extra completions, fzf menu
+zsh-users/zsh-completions kind:fpath path:src
+aloxaf/fzf-tab
+belak/zsh-utils path:completion/functions kind:autoload post:compstyle_zshzoo_setup
+
+# Keybindings, history, utilities
+belak/zsh-utils path:editor
+belak/zsh-utils path:history
+belak/zsh-utils path:utility
+ohmyzsh/ohmyzsh path:lib
+
+ohmyzsh/ohmyzsh path:plugins/git
+ohmyzsh/ohmyzsh path:plugins/npm
+ohmyzsh/ohmyzsh path:plugins/yarn
+ohmyzsh/ohmyzsh path:plugins/composer
+ohmyzsh/ohmyzsh path:plugins/httpie kind:fpath  # completion only
+ohmyzsh/ohmyzsh path:plugins/common-aliases
+rupa/z
+ohmyzsh/ohmyzsh path:plugins/colored-man-pages
+ohmyzsh/ohmyzsh path:plugins/extract
+
+romkatv/zsh-bench kind:path
+jasonmccreary/git-trim
+paulirish/git-open
+
+# Prompt: powerlevel10k where ~/.p10k.zsh exists (`p10k configure`), else fwalch
+romkatv/powerlevel10k conditional:has-p10k
+ohmyzsh/ohmyzsh path:themes/fwalch.zsh-theme conditional:no-p10k
+
+# Last: they wrap the widgets defined above
+zdharma-continuum/fast-syntax-highlighting
+zsh-users/zsh-autosuggestions
+zsh-users/zsh-history-substring-search

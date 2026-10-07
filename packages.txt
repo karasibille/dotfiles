@@ -5,8 +5,9 @@
 #   a/b       first one available (eza on Ubuntu 24.04, exa on 22.04)
 #   -         not packaged: install it by hand
 zsh                            | zsh                    | shell
-aur:antigen                    | zsh-antigen            | zsh plugins
+aur:zsh-antidote               | zsh-antidote           | zsh plugins
 eza                            | eza/exa                | ls aliases
+fzf                            | fzf                    | zsh completion menu (fzf-tab)
 neovim                         | neovim                 | editor
 git                            | git                    | -
 python                         | python3                | bin/theme

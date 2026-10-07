@@ -27,6 +27,7 @@ done
 # source in the repository | target | command required to install it (- = always)
 LINKS=(
     "zshrc      | $HOME/.zshrc        | zsh"
+    "zsh_plugins.txt | $HOME/.zsh_plugins.txt | zsh"
     "profile    | $HOME/.profile      | -"
     "npmrc      | $HOME/.npmrc        | npm"
     "Xresources | $HOME/.Xresources   | xrdb"

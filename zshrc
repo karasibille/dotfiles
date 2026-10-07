@@ -1,32 +1,25 @@
+# Powerlevel10k instant prompt, when it is the prompt (see zsh_plugins.txt).
+# Should stay close to the top: anything asking for input goes above.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # Environment (PATH, EDITOR…) shared with other shells
 [ -f ~/.profile ] && source ~/.profile
 typeset -U path
 
-# antigen: Arch (AUR antigen) or Ubuntu (zsh-antigen) location
-for f in /usr/share/zsh/share/antigen.zsh /usr/share/zsh-antigen/antigen.zsh ~/.antigen.zsh; do
+# antidote: ~/.antidote (git clone) or the zsh-antidote package (Arch AUR, Ubuntu)
+for f in ~/.antidote/antidote.zsh /usr/share/zsh-antidote/antidote.zsh; do
     [ -f "$f" ] && { source "$f"; break; }
 done
 
-if (( $+functions[antigen] )); then
-    antigen use oh-my-zsh
+# Prompt choice for zsh_plugins.txt
+has-p10k() { [[ -f ~/.p10k.zsh ]] }
+no-p10k() { ! has-p10k }
 
-    antigen bundle zsh-users/zsh-syntax-highlighting
-    antigen bundle zsh-users/zsh-autosuggestions
-
-    antigen bundle git
-    antigen bundle npm
-    antigen bundle yarn
-    antigen bundle composer
-    antigen bundle httpie
-    antigen bundle common-aliases
-    antigen bundle z
-    antigen bundle colored-man-pages
-    antigen bundle jasonmccreary/git-trim@main
-    antigen bundle paulirish/git-open
-
-    antigen theme fwalch
-    antigen apply
-fi
+# Plugins listed in ~/.zsh_plugins.txt (zsh_plugins.txt in the dotfiles)
+(( $+functions[antidote] )) && antidote load
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
 (( $+commands[thefuck] )) && eval "$(thefuck --alias)"
 (( $+commands[rbenv] )) && eval "$(rbenv init - zsh)"
