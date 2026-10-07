@@ -8,10 +8,29 @@ label-close-foreground = ${colors.red}
 
 label-separator = "  "
 
-menu-0-0 = 
-menu-0-0-exec = reboot
-menu-0-0-foreground = ${colors.green}
+; Level 0: the actions; each one opens its confirmation level (1 to 3), where
+; clicking the action again runs it and  closes the menu
+menu-0-0 = 
+menu-0-0-exec = #powermenu.open.1
+menu-0-0-foreground = ${colors.yellow}
 
-menu-0-1 = 
-menu-0-1-exec = poweroff
-menu-0-1-foreground = ${colors.blue}
+menu-0-1 = 
+menu-0-1-exec = #powermenu.open.2
+menu-0-1-foreground = ${colors.green}
+
+menu-0-2 = 
+menu-0-2-exec = #powermenu.open.3
+menu-0-2-foreground = ${colors.blue}
+
+; Log out of i3
+menu-1-0 =  ?
+menu-1-0-exec = i3-msg exit
+menu-1-0-foreground = ${colors.yellow}
+
+menu-2-0 =  ?
+menu-2-0-exec = systemctl reboot
+menu-2-0-foreground = ${colors.green}
+
+menu-3-0 =  ?
+menu-3-0-exec = systemctl poweroff
+menu-3-0-foreground = ${colors.blue}
