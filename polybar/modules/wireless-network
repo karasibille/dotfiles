@@ -9,13 +9,12 @@ accumulate-stats = true
 
 unknown-as-up = false
 
-; Click: nmtui, in the first installed terminal (as $term in i3/config)
-format-connected = %{A1:sh -c 'exec "$(command -v kitty || command -v alacritty || echo i3-sensible-terminal)" -e nmtui' &:}<ramp-signal> <label-connected>%{A}
+; Click: nmtui, in the first installed terminal (as $term in i3/config).
+; Icon only when connected: the network name stays off the screen.
+format-connected = %{A1:sh -c 'exec "$(command -v kitty || command -v alacritty || echo i3-sensible-terminal)" -e nmtui' &:}<ramp-signal>%{A}
 
 format-disconnected = %{A1:sh -c 'exec "$(command -v kitty || command -v alacritty || echo i3-sensible-terminal)" -e nmtui' &:}<label-disconnected>%{A}
 
-
-label-connected = %essid%
 
 label-disconnected = 
 label-disconnected-foreground = ${self.color}
