@@ -3,6 +3,10 @@
 
 ! Mito Laser Colors
 #define Midnight_Blue_Darkest   #0a0714
+! Terminal background: darker than color0 and color8, which must stay
+! visible on it (zsh-autosuggestions uses color8). The saturated
+! Midnight_Blue looked dark under redshift but too bright with neutral colors.
+#define Midnight_Blue_Deep      #150f3c
 #define Midnight_Blue_Darker    #1a2a3a
 #define Midnight_Blue_Dark      #1f1658 
 #define Midnight_Blue           #2d227d
@@ -32,7 +36,7 @@
 
 ! Colors 
 *.foreground: Medium_Turquoise
-*.background: Midnight_Blue
+*.background: Midnight_Blue_Deep
 *cursorColor: Crimson
 
 ! Black + DarkGrey
