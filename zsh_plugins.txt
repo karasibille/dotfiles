@@ -13,17 +13,23 @@ belak/zsh-utils path:completion/functions kind:autoload post:compstyle_zshzoo_se
 belak/zsh-utils path:editor
 belak/zsh-utils path:history
 belak/zsh-utils path:utility
-ohmyzsh/ohmyzsh path:lib
 
-ohmyzsh/ohmyzsh path:plugins/git
-ohmyzsh/ohmyzsh path:plugins/npm
-ohmyzsh/ohmyzsh path:plugins/yarn
-ohmyzsh/ohmyzsh path:plugins/composer
-ohmyzsh/ohmyzsh path:plugins/httpie kind:fpath  # completion only
+# The oh-my-zsh lib files that set options, keybindings (emacs mode, prefix
+# search on arrows), history and completion styles, or the terminal title;
+# the others only define unused functions. Plugins: only what the shell history
+# shows is used. Git aliases are in aliases/git.
+ohmyzsh/ohmyzsh path:lib/completion.zsh
+ohmyzsh/ohmyzsh path:lib/directories.zsh
+ohmyzsh/ohmyzsh path:lib/grep.zsh
+ohmyzsh/ohmyzsh path:lib/history.zsh
+ohmyzsh/ohmyzsh path:lib/key-bindings.zsh
+ohmyzsh/ohmyzsh path:lib/misc.zsh
+ohmyzsh/ohmyzsh path:lib/termsupport.zsh
+ohmyzsh/ohmyzsh path:lib/theme-and-appearance.zsh
 ohmyzsh/ohmyzsh path:plugins/common-aliases
-rupa/z
 ohmyzsh/ohmyzsh path:plugins/colored-man-pages
-ohmyzsh/ohmyzsh path:plugins/extract
+ohmyzsh/ohmyzsh path:plugins/httpie kind:fpath  # completion only
+rupa/z
 
 romkatv/zsh-bench kind:path
 jasonmccreary/git-trim
@@ -31,6 +37,7 @@ paulirish/git-open
 
 # Prompt: powerlevel10k where ~/.p10k.zsh exists (`p10k configure`), else fwalch
 romkatv/powerlevel10k conditional:has-p10k
+ohmyzsh/ohmyzsh path:lib/git.zsh conditional:no-p10k  # git_prompt_info
 ohmyzsh/ohmyzsh path:themes/fwalch.zsh-theme conditional:no-p10k
 
 # Last: they wrap the widgets defined above

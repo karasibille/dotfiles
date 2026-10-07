@@ -1,2 +1,7 @@
 alias gitlog="git log --graph --oneline --all"
 alias dracarys="git reset --hard && git clean -df"
+
+# The ones used from the oh-my-zsh git plugin
+alias gss='git status --short'
+alias gpsup='git push --set-upstream origin $(git branch --show-current)'
+alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign --message "--wip-- [skip ci]"'
