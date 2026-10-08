@@ -5,8 +5,8 @@
 #   ./install.sh             create the links
 #   ./install.sh --packages  first install the missing packages (packages.txt),
 #                            with pacman/yay on Arch or apt on Ubuntu, the
-#                            backlight udev rule (udev/) and the clock resync
-#                            after resume (systemd/)
+#                            backlight udev rule and the clock resync after
+#                            resume (system/)
 #   ./install.sh --dry-run   only show what would be done (with or without
 #                            --packages)
 #
@@ -27,30 +27,32 @@ for arg in "$@"; do
 done
 
 # source in the repository | target | command required to install it (- = always)
+# home/ holds the dotfiles of $HOME, config/ the directories of ~/.config,
+# bin/ the scripts of ~/.local/bin; system/ is copied to /etc by setup_system.
 LINKS=(
-    "zshrc      | $HOME/.zshrc        | zsh"
-    "zsh_plugins.txt | $HOME/.zsh_plugins.txt | zsh"
-    "profile    | $HOME/.profile      | -"
-    "npmrc      | $HOME/.npmrc        | npm"
-    "Xresources | $HOME/.Xresources   | xrdb"
-    "aliases    | $CONFIG/aliases     | zsh"
-    "xrdb       | $CONFIG/xrdb        | xrdb"
-    "fontconfig | $CONFIG/fontconfig  | fc-cache"
-    "i3         | $CONFIG/i3          | i3"
-    "polybar    | $CONFIG/polybar     | polybar"
-    "rofi       | $CONFIG/rofi        | rofi"
-    "dunst      | $CONFIG/dunst       | dunst"
-    "redshift   | $CONFIG/redshift    | redshift"
-    "autorandr/settings.ini | $CONFIG/autorandr/settings.ini | autorandr"
-    "autorandr/postswitch   | $CONFIG/autorandr/postswitch   | autorandr"
-    "ranger     | $CONFIG/ranger      | ranger"
-    "kitty      | $CONFIG/kitty       | kitty"
-    "alacritty  | $CONFIG/alacritty   | alacritty"
-    "picom/picom.conf     | $CONFIG/picom.conf           | picom"
-    "gtk-3.0/settings.ini | $CONFIG/gtk-3.0/settings.ini | -"
-    "gtk-3.0/gtk.css      | $CONFIG/gtk-3.0/gtk.css      | -"
-    "bin/theme  | $HOME/.local/bin/theme | python3"
-    "bin/lock   | $HOME/.local/bin/lock  | i3lock"
+    "home/zshrc           | $HOME/.zshrc           | zsh"
+    "home/zsh_plugins.txt | $HOME/.zsh_plugins.txt | zsh"
+    "home/profile         | $HOME/.profile         | -"
+    "home/npmrc           | $HOME/.npmrc           | npm"
+    "home/Xresources      | $HOME/.Xresources      | xrdb"
+    "config/aliases    | $CONFIG/aliases    | zsh"
+    "config/xrdb       | $CONFIG/xrdb       | xrdb"
+    "config/fontconfig | $CONFIG/fontconfig | fc-cache"
+    "config/i3         | $CONFIG/i3         | i3"
+    "config/polybar    | $CONFIG/polybar    | polybar"
+    "config/rofi       | $CONFIG/rofi       | rofi"
+    "config/dunst      | $CONFIG/dunst      | dunst"
+    "config/redshift   | $CONFIG/redshift   | redshift"
+    "config/autorandr/settings.ini | $CONFIG/autorandr/settings.ini | autorandr"
+    "config/autorandr/postswitch   | $CONFIG/autorandr/postswitch   | autorandr"
+    "config/ranger     | $CONFIG/ranger     | ranger"
+    "config/kitty      | $CONFIG/kitty      | kitty"
+    "config/alacritty  | $CONFIG/alacritty  | alacritty"
+    "config/picom/picom.conf     | $CONFIG/picom.conf           | picom"
+    "config/gtk-3.0/settings.ini | $CONFIG/gtk-3.0/settings.ini | -"
+    "config/gtk-3.0/gtk.css      | $CONFIG/gtk-3.0/gtk.css      | -"
+    "bin/theme    | $HOME/.local/bin/theme    | python3"
+    "bin/lock     | $HOME/.local/bin/lock     | i3lock"
     "bin/autolock | $HOME/.local/bin/autolock | python3"
 )
 
@@ -177,11 +179,11 @@ link() {
 # udev may run before /home is mounted.
 setup_system() {
     local rule=/etc/udev/rules.d/90-backlight.rules user=${USER:-$(id -un)}
-    if cmp -s "$DOTFILES/udev/90-backlight.rules" "$rule"; then
+    if cmp -s "$DOTFILES/system/udev/90-backlight.rules" "$rule"; then
         echo "ok       $rule"
     else
         echo "install  $rule"
-        run sudo install -m 644 "$DOTFILES/udev/90-backlight.rules" "$rule"
+        run sudo install -m 644 "$DOTFILES/system/udev/90-backlight.rules" "$rule"
         run sudo udevadm trigger --subsystem-match=backlight --action=add
     fi
 
@@ -195,11 +197,11 @@ setup_system() {
     # Resync the clock with NTP after a resume (see the unit). Copied too:
     # systemd reads /etc/systemd/system before /home is mounted.
     local unit=resync-clock-after-resume.service
-    if cmp -s "$DOTFILES/systemd/$unit" "/etc/systemd/system/$unit"; then
+    if cmp -s "$DOTFILES/system/systemd/$unit" "/etc/systemd/system/$unit"; then
         echo "ok       /etc/systemd/system/$unit"
     else
         echo "install  /etc/systemd/system/$unit"
-        run sudo install -m 644 "$DOTFILES/systemd/$unit" "/etc/systemd/system/$unit"
+        run sudo install -m 644 "$DOTFILES/system/systemd/$unit" "/etc/systemd/system/$unit"
         run sudo systemctl daemon-reload
     fi
     if systemctl is-enabled -q "$unit" 2>/dev/null; then
@@ -227,7 +229,7 @@ for entry in "${LINKS[@]}"; do
 done
 
 # Color files are generated, not versioned: create them on first install
-if [ ! -L "$DOTFILES/xrdb/current" ] && command -v python3 >/dev/null 2>&1; then
+if [ ! -L "$DOTFILES/config/xrdb/current" ] && command -v python3 >/dev/null 2>&1; then
     echo "theme    nord (first install)"
     run "$DOTFILES/bin/theme" --no-reload nord
 fi

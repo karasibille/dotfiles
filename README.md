@@ -15,9 +15,9 @@ cd ~/Projects/github.com/karasibille/dotfiles
 yay or paru for the AUR) on Arch, or apt on Ubuntu. It lists what has to be
 installed by hand: on Ubuntu, Source Code Pro, Font Awesome 7 (Ubuntu only
 packages 4.7), the capitaine cursors and the Nordic GTK theme. It also
-installs `udev/90-backlight.rules` and adds you to the `video` group, so that
+installs `system/udev/90-backlight.rules` and adds you to the `video` group, so that
 scrolling on the polybar brightness module can change it (after a new login),
-and enables `systemd/resync-clock-after-resume.service` (see Clock below).
+and enables `system/systemd/resync-clock-after-resume.service` (see Clock below).
 Without `--packages`, only the links are created.
 
 On Ubuntu, `./install-fonts.sh` installs Source Code Pro and Font Awesome 7
@@ -40,20 +40,20 @@ theme laser    # switch directly
 theme --list
 ```
 
-Each theme is a single X resources file in `xrdb/colors/`. `theme` generates
+Each theme is a single X resources file in `config/xrdb/colors/`. `theme` generates
 the color files of kitty, alacritty, rofi, dunst and polybar from it
-(`*.generated*`, not versioned), points `xrdb/current` to it and reloads the
+(`*.generated*`, not versioned), points `config/xrdb/current` to it and reloads the
 running programs; i3 reads the colors from xrdb. The theme's GTK theme
 (`theme.gtk`) is sent to running GTK applications through
 [xsettingsd](https://github.com/derat/xsettingsd) when it is installed;
-otherwise new applications use `gtk-3.0/settings.ini`.
+otherwise new applications use `config/gtk-3.0/settings.ini`.
 
 `theme.wallpaper` sets the theme's wallpaper (e.g.
 `theme.wallpaper: ~/Pictures/wallpapers/nord.png`); without it, or if the
 image is missing, the background is the theme's background color. Wallpapers
 are not versioned: copy them to each machine.
 
-To add a theme, copy `xrdb/colors/nord` and change the colors: `background`,
+To add a theme, copy `config/xrdb/colors/nord` and change the colors: `background`,
 `foreground` and `color0`–`color15` are required, the `theme.*` roles
 (accent, bar colors…) are optional and listed in `bin/theme`.
 
@@ -71,9 +71,9 @@ autorandr                   # list the profiles, the current one is marked
 ```
 
 Monitors are matched by their EDID, not their output name
-(`autorandr/settings.ini`): the same screen is `DP1` or `DP-1-0` depending on
+(`config/autorandr/settings.ini`): the same screen is `DP1` or `DP-1-0` depending on
 the GPU it goes through. Profiles are per machine and not versioned
-(`~/.config/autorandr/<name>/`). After each switch, `autorandr/postswitch`
+(`~/.config/autorandr/<name>/`). After each switch, `config/autorandr/postswitch`
 restarts polybar (full bar on the primary monitor, workspaces and time on the
 others) and resets the wallpaper and the lock image to the new screen size.
 
@@ -153,17 +153,29 @@ These files are sourced when present and are not versioned:
 
 ## Content
 
-| Directory     | Program                                   |
+The repository is laid out by destination:
+
+| Directory   | Goes to                        | How                                   |
+|-------------|--------------------------------|---------------------------------------|
+| `home/`     | `~/.<name>`                    | symlinked by `install.sh`             |
+| `config/`   | `~/.config/<name>`             | symlinked by `install.sh`             |
+| `bin/`      | `~/.local/bin/`                | symlinked by `install.sh`             |
+| `system/`   | `/etc`                         | copied by `install.sh --packages`     |
+| `share/`    | stays here                     | data read by `bin/` (face model)      |
+| `*.sh`, `packages.txt` | —                   | installers and the package list       |
+
+| Config        | Program                                   |
 |---------------|-------------------------------------------|
-| `zshrc`, `zsh_plugins.txt`, `aliases/` | zsh + [antidote](https://github.com/mattmc3/antidote) / oh-my-zsh |
-| `profile`     | login environment                         |
-| `i3/`         | i3 window manager                         |
-| `polybar/`    | status bar                                |
-| `rofi/`       | launcher                                  |
-| `dunst/`      | notifications                             |
-| `kitty/`, `alacritty/` | terminals                        |
-| `picom/`      | compositor                                |
-| `gtk-3.0/`    | GTK 3 theme, icons, font                  |
-| `xrdb/`, `Xresources` | Nord and Laser color themes       |
-| `autorandr/`  | monitor profiles: options and hook        |
-| `redshift/`, `ranger/`, `fontconfig/`, `npmrc` | misc     |
+| `home/zshrc`, `home/zsh_plugins.txt`, `config/aliases/` | zsh + [antidote](https://github.com/mattmc3/antidote) / oh-my-zsh |
+| `home/profile` | login environment                        |
+| `config/i3/`  | i3 window manager                         |
+| `config/polybar/` | status bar                            |
+| `config/rofi/` | launcher                                 |
+| `config/dunst/` | notifications                           |
+| `config/kitty/`, `config/alacritty/` | terminals          |
+| `config/picom/` | compositor                              |
+| `config/gtk-3.0/` | GTK 3 theme, icons, font              |
+| `config/xrdb/`, `home/Xresources` | Nord and Laser color themes |
+| `config/autorandr/` | monitor profiles: options and hook  |
+| `config/redshift/`, `config/ranger/`, `config/fontconfig/`, `home/npmrc` | misc |
+| `bin/theme`, `bin/lock`, `bin/autolock` | theme switcher, screen lock, presence lock |

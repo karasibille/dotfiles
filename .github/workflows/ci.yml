@@ -27,12 +27,12 @@ jobs:
 
       - name: zsh syntax
         run: |
-          for f in zshrc aliases/*; do
+          for f in home/zshrc config/aliases/*; do
             zsh -n "$f" || exit 1
           done
 
       - name: i3 config
-        run: i3 -C -c i3/config
+        run: i3 -C -c config/i3/config
 
   install:
     strategy:
@@ -69,7 +69,7 @@ jobs:
 
       - name: zsh starts without errors
         run: |
-          test "$(readlink ~/.zshrc)" = "$PWD/zshrc"
+          test "$(readlink ~/.zshrc)" = "$PWD/home/zshrc"
           zsh -i -c exit 2>zsh-errors
           if [ -s zsh-errors ]; then
             cat zsh-errors >&2
