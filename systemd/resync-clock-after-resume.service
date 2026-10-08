@@ -1,0 +1,20 @@
+# Resync the system clock with NTP right after a resume. Installed by
+# install.sh --packages into /etc/systemd/system.
+#
+# The kernel measures how long a suspend lasted with the hardware clock (RTC).
+# On a laptop whose RTC no longer ticks (MSI GS63VR, 2016), the clock comes
+# back at the time the lid was closed and stays wrong until the next NTP poll
+# of systemd-timesyncd, up to 34 minutes later. Restarting timesyncd makes it
+# poll at once; nm-online first waits (at most 30 s) for the network to be
+# back, and is skipped where NetworkManager is not installed.
+[Unit]
+Description=Resync the clock with NTP after resume
+After=suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target
+
+[Service]
+Type=oneshot
+ExecStartPre=-/usr/bin/nm-online -q --timeout=30
+ExecStart=/usr/bin/systemctl try-restart systemd-timesyncd.service
+
+[Install]
+WantedBy=suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target

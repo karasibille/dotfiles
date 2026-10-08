@@ -4,8 +4,9 @@
 #
 #   ./install.sh             create the links
 #   ./install.sh --packages  first install the missing packages (packages.txt),
-#                            with pacman/yay on Arch or apt on Ubuntu, and the
-#                            backlight udev rule (udev/)
+#                            with pacman/yay on Arch or apt on Ubuntu, the
+#                            backlight udev rule (udev/) and the clock resync
+#                            after resume (systemd/)
 #   ./install.sh --dry-run   only show what would be done (with or without
 #                            --packages)
 #
@@ -171,7 +172,7 @@ link() {
     run ln -s "$src" "$dst"
 }
 
-# System side, with --packages as it needs sudo: let the video group change
+# System side, with --packages as it needs sudo. Let the video group change
 # the brightness (polybar backlight module). The rule is copied, not linked:
 # udev may run before /home is mounted.
 setup_system() {
@@ -189,6 +190,23 @@ setup_system() {
     else
         echo "group    add $user to video (effective at the next login)"
         run sudo usermod -aG video "$user"
+    fi
+
+    # Resync the clock with NTP after a resume (see the unit). Copied too:
+    # systemd reads /etc/systemd/system before /home is mounted.
+    local unit=resync-clock-after-resume.service
+    if cmp -s "$DOTFILES/systemd/$unit" "/etc/systemd/system/$unit"; then
+        echo "ok       /etc/systemd/system/$unit"
+    else
+        echo "install  /etc/systemd/system/$unit"
+        run sudo install -m 644 "$DOTFILES/systemd/$unit" "/etc/systemd/system/$unit"
+        run sudo systemctl daemon-reload
+    fi
+    if systemctl is-enabled -q "$unit" 2>/dev/null; then
+        echo "ok       $unit enabled"
+    else
+        echo "enable   $unit"
+        run sudo systemctl enable "$unit"
     fi
 }
 

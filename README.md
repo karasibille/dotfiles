@@ -16,7 +16,8 @@ yay or paru for the AUR) on Arch, or apt on Ubuntu. It lists what has to be
 installed by hand: on Ubuntu, Source Code Pro, Font Awesome 7 (Ubuntu only
 packages 4.7), the capitaine cursors and the Nordic GTK theme. It also
 installs `udev/90-backlight.rules` and adds you to the `video` group, so that
-scrolling on the polybar brightness module can change it (after a new login).
+scrolling on the polybar brightness module can change it (after a new login),
+and enables `systemd/resync-clock-after-resume.service` (see Clock below).
 Without `--packages`, only the links are created.
 
 On Ubuntu, `./install-fonts.sh` installs Source Code Pro and Font Awesome 7
@@ -95,6 +96,21 @@ sudo localectl set-x11-keymap us pc105 "" compose:rctrl
 This writes `/etc/X11/xorg.conf.d/00-keyboard.conf`. It is not done by
 `install.sh`: the layout and model are per machine, and the command replaces
 the whole system keyboard configuration.
+
+## Clock
+
+The kernel measures how long a suspend lasted with the hardware clock (RTC).
+On a laptop whose RTC no longer ticks (the MSI GS63VR does not, even while
+running: a dead CMOS battery or a firmware bug), the clock comes back at the
+time the lid was closed and stays wrong until the next NTP poll of
+systemd-timesyncd, up to 34 minutes later. The system unit installed by
+`--packages` restarts timesyncd after each resume, once the network is back,
+so the clock is corrected within seconds. To check the RTC:
+
+```sh
+timedatectl                       # RTC time should match Universal time
+cat /sys/class/rtc/rtc0/time      # should change from one call to the next
+```
 
 ## Screen lock
 
