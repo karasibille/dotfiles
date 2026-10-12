@@ -4,11 +4,13 @@ type = internal/backlight
 ; Detected by launch.sh (intel_backlight, amdgpu_bl0…)
 card = ${env:BACKLIGHT:intel_backlight}
 
-; Scrolling writes to /sys: needs system/udev/90-backlight.rules and the video group
-enable-scroll = true
+; Scrolling writes to /sys: needs system/udev/90-backlight.rules and the video group.
+; Done by the script (actions below) rather than enable-scroll, to stop at 5 %
+enable-scroll = false
 
 format = <label>
-format-prefix = " "
+; The icon is in format-prefix, outside the label: both need the scroll actions
+format-prefix = "%{A4:~/.config/polybar/custom/scripts/backlight.sh up:}%{A5:~/.config/polybar/custom/scripts/backlight.sh down:} %{A}%{A}"
 format-prefix-foreground = ${self.color}
 
-label = %percentage%%
+label = %{A4:~/.config/polybar/custom/scripts/backlight.sh up:}%{A5:~/.config/polybar/custom/scripts/backlight.sh down:}%percentage%%%{A}%{A}
