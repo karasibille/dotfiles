@@ -253,6 +253,17 @@ set $ws8 "8:八"
 set $ws9 "9:九"
 set $ws10 "10:十"
 
+# New workspaces 1-8 open on the primary monitor; config/i3/workspaces sorts
+# them all (1-8 primary, 9 and 10 on the others) at startup and screen changes
+workspace $ws1 output primary
+workspace $ws2 output primary
+workspace $ws3 output primary
+workspace $ws4 output primary
+workspace $ws5 output primary
+workspace $ws6 output primary
+workspace $ws7 output primary
+workspace $ws8 output primary
+
 #############################################
 # autostart applications/services on login: #
 #############################################
@@ -264,6 +275,7 @@ exec --no-startup-id sh -c 'for a in /usr/lib/polkit-gnome/polkit-gnome-authenti
 # Monitors: apply the saved autorandr profile matching the connected screens
 # (autorandr --save <name>); its postswitch hook restarts polybar
 exec --no-startup-id autorandr --change
+exec --no-startup-id ~/.config/i3/workspaces
 
 # Compose key on right Ctrl. X drops it when it detects a keyboard again
 # (plugged in, dock, resume from suspend): exec_always so that $mod+Shift+r
