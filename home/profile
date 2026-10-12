@@ -24,9 +24,12 @@ for t in kitty alacritty; do
 done
 unset t
 
-# systemd user ssh-agent (systemctl --user enable --now ssh-agent)
+# systemd user ssh-agent (systemctl --user enable --now ssh-agent), else the
+# gnome-keyring one (gcr-ssh-agent), also outside GNOME
 if [ -S "$XDG_RUNTIME_DIR/ssh-agent.socket" ]; then
     export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+elif [ -S "$XDG_RUNTIME_DIR/gcr/ssh" ]; then
+    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
 fi
 
 # Machine-specific settings, not versioned
