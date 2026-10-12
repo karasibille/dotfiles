@@ -18,6 +18,8 @@ while pgrep -u "$uid" -x polybar >/dev/null; do
     [ "$tries" -gt 30 ] && pkill -KILL -u "$uid" -x polybar
     sleep 0.1
 done
+# Scripts of the custom modules outlive a killed bar
+pkill -u "$uid" -f "$(dirname "$0")/custom/scripts/"
 
 # Hardware of this machine, for the battery and backlight modules: names
 # differ between laptops (BAT0/BAT1, AC/ADP1, intel_backlight/amdgpu_bl0…)
