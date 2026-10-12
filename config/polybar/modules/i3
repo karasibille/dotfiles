@@ -7,7 +7,7 @@ strip-wsnumbers = true
 
 index-sort = true
 
-enable-click = true
+enable-click = false
 
 enable-scroll = false
 
