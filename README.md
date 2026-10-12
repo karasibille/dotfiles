@@ -93,9 +93,22 @@ localectl status    # check the current layout first, and keep it below
 sudo localectl set-x11-keymap us pc105 "" compose:rctrl
 ```
 
-This writes `/etc/X11/xorg.conf.d/00-keyboard.conf`. It is not done by
+This writes `/etc/X11/xorg.conf.d/00-keyboard.conf`. Debian and Ubuntu refuse
+it ("Setting X11 and console keymaps is not supported in Debian"): set
+`XKBLAYOUT` and `XKBOPTIONS` in `/etc/default/keyboard` instead, then
+`sudo udevadm trigger --subsystem-match=input --action=change`. It is not done by
 `install.sh`: the layout and model are per machine, and the command replaces
 the whole system keyboard configuration.
+
+Several layouts, switched by a click on the keyboard module of polybar: list
+them in `XKB_LAYOUT`, in `~/.profile.local`, the first being the default:
+
+```sh
+export XKB_LAYOUT=us,fr
+```
+
+i3 passes it to `setxkbmap -layout`. X forgets it too when it detects a
+keyboard again; the lasting fix is the same, with `us,fr` as the layout.
 
 ## Clock
 

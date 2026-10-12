@@ -268,7 +268,9 @@ exec --no-startup-id autorandr --change
 # Compose key on right Ctrl. X drops it when it detects a keyboard again
 # (plugged in, dock, resume from suspend): exec_always so that $mod+Shift+r
 # restores it; the lasting fix is system-wide, see the README (Keyboard)
-exec_always --no-startup-id setxkbmap -option compose:rctrl
+# XKB_LAYOUT (e.g. us,fr in ~/.profile.local): the layouts, cycled by a click
+# on the polybar xkeyboard module; unset, the system layout is kept
+exec_always --no-startup-id setxkbmap ${XKB_LAYOUT:+-layout "$XKB_LAYOUT"} -option compose:rctrl
 
 # transparency
 # uncomment one of them to be used (picom package is installed per default)
