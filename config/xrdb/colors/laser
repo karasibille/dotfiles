@@ -86,6 +86,7 @@ theme.bar.secondary: Dawn
 ! Icons readable on the dark blue bar
 theme.bar.blue: Dark_Turquoise
 theme.bar.red: Crimson
+theme.firefox.foreground: Light_Steel_Blue
 theme.gtk: Nordic
 ! Not versioned, see README
 theme.wallpaper: ~/Pictures/wallpapers/laser.jpg

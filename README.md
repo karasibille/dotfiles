@@ -57,10 +57,11 @@ To add a theme, copy `config/xrdb/colors/nord` and change the colors: `backgroun
 `foreground` and `color0`–`color15` are required, the `theme.*` roles
 (accent, bar colors…) are optional and listed in `bin/theme`.
 
-`theme` does not reach Firefox: its themes, with the same colors and roles,
-are add-ons of their own, [firefox-laser](https://github.com/karasibille/firefox-laser)
-and [firefox-nord](https://github.com/karasibille/firefox-nord), to switch in
-Firefox (`about:addons`, Themes).
+Firefox follows with the
+[firefox-desktop-theme](https://github.com/karasibille/firefox-desktop-theme)
+extension: `theme` writes the Firefox colors to `~/.local/state/theme/firefox.json`
+where the extension's native host picks them up and applies them live. Install the
+extension and run its `install.sh` once per machine.
 
 ## Monitors
 

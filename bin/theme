@@ -2,8 +2,8 @@
 """Switch the color theme of every tool at once.
 
 A theme is an X resources file in config/xrdb/colors/. Its colors are written to a
-generated file for each tool (kitty, alacritty, rofi, dunst, polybar), its GTK
-theme to xsettingsd, its wallpaper is set, then the running programs are
+generated file for each tool (kitty, alacritty, rofi, dunst, polybar, Firefox), its
+GTK theme to xsettingsd, its wallpaper is set, then the running programs are
 reloaded.
 
     theme               pick a theme (rofi, or a prompt in a terminal)
@@ -29,6 +29,7 @@ Besides background, foreground, cursorColor and color0-15, a theme can set
     theme.bar.urgent         polybar urgent workspace background (color1)
     theme.bar.red, .green, .yellow, .blue, .purple, .cyan
                              polybar module colors (color1 to color6)
+    theme.firefox.foreground Firefox text (foreground)
     theme.gtk                GTK theme name (gtk-theme-name of config/gtk-3.0/settings.ini)
     theme.wallpaper          wallpaper image, ~ allowed (solid background color)
 
@@ -37,9 +38,13 @@ newly started ones use config/gtk-3.0/settings.ini.
 
 The wallpaper in use is the symlink ~/.local/state/theme/wallpaper, also read
 by i3 at startup and by bin/lock. Wallpapers are not versioned.
+
+Firefox follows the theme with the firefox-desktop-theme extension, whose native
+host watches ~/.local/state/theme/firefox.json.
 """
 import argparse
 import configparser
+import json
 import os
 import re
 import shutil
@@ -58,11 +63,14 @@ XSETTINGSD = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / 
 STATE = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local" / "state")) / "theme"
 # Symlink to the wallpaper in use (image of the theme or solid color)
 WALLPAPER = STATE / "wallpaper"
+# Read by the native host of firefox-desktop-theme
+FIREFOX = STATE / "firefox.json"
 
 OPTIONAL = {
     "cursor": ("cursorColor", "foreground"),
     "accent": ("theme.accent", "color5"),
     "selection": ("theme.selection", "color8"),
+    "firefox_foreground": ("theme.firefox.foreground", "foreground"),
     "bar_background": ("theme.bar.background", "background"),
     "bar_foreground": ("theme.bar.foreground", "foreground"),
     "bar_foreground_alt": ("theme.bar.foregroundAlt", "color8"),
@@ -272,6 +280,25 @@ def palette(resources, name):
     return colors
 
 
+def firefox_theme(colors):
+    """Firefox theme (theme key of a manifest), with the color roles of firefox-laser."""
+    return {"colors": {
+        "frame": colors["background"],
+        "popup": colors["background"],
+        "toolbar": colors["color0"],
+        "toolbar_field": colors["selection"],
+        "toolbar_text": colors["firefox_foreground"],
+        "toolbar_field_text": colors["firefox_foreground"],
+        "popup_text": colors["firefox_foreground"],
+        "tab_background_text": colors["accent"],
+        "toolbar_field_highlight": colors["accent"],
+        "tab_line": colors["color5"],
+        "tab_loading": colors["color5"],
+        "toolbar_bottom_separator": colors["color1"],
+        "toolbar_vertical_separator": colors["color1"],
+    }}
+
+
 def gtk_themes():
     dirs = [Path.home() / ".themes", Path.home() / ".local/share/themes", Path("/usr/share/themes")]
     return {p.name for d in dirs if d.is_dir() for p in d.iterdir()}
@@ -344,6 +371,11 @@ def generate(name):
         f"# {header}\n" + "".join(f'{key} "{value}"\n' for key, value in settings.items())
     )
     colors["gtk"] = settings.get("Net/ThemeName")
+    STATE.mkdir(parents=True, exist_ok=True)
+    # Replaced at once: the host would otherwise read a half-written file
+    tmp = FIREFOX.with_suffix(".tmp")
+    tmp.write_text(json.dumps(firefox_theme(colors), indent=2) + "\n")
+    tmp.replace(FIREFOX)
     colors["wallpaper"] = set_wallpaper(resources, colors, name)
 
     if CURRENT.is_symlink() or CURRENT.exists():
