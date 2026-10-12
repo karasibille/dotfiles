@@ -38,20 +38,24 @@ default_border pixel $border_size
 hide_edge_borders none
 
 
-# Gaps: 32 px between windows, 16 px to the screen edges. i3 adds the outer
-# gap to the inner one at the edges, hence a negative outer gap (16 - 32).
+# Gaps: 32 px between windows, 24 px to the screen edges. i3 adds the outer
+# gap to the inner one at the edges, hence a negative outer gap (24 - 32).
 gaps inner 32
-gaps outer -16
+gaps outer -8
 # The top gap also holds polybar (height 32 in polybar/bars/top), which is
 # override-redirect: the space stays reserved while the bar restarts (theme
-# change, screen change), so windows don't move. Bar height + 16 px edge -
+# change, screen change), so windows don't move. Bar height + 24 px edge -
 # 32 px inner gap.
-gaps top 16
+gaps top 24
 
-bindsym $mod+minus       gaps inner all minus 4
-bindsym $mod+plus        gaps inner all plus  4
-bindsym $mod+Shift+minus gaps outer all minus 4
-bindsym $mod+Shift+plus  gaps outer all plus  4
+# Through config/i3/gaps, which keeps the bar's space and halves the gaps on
+# the laptop panel alone; $mod+Shift+g resets
+bindsym $mod+minus       exec --no-startup-id ~/.config/i3/gaps inner -4
+bindsym $mod+plus        exec --no-startup-id ~/.config/i3/gaps inner +4
+bindsym $mod+Shift+minus exec --no-startup-id ~/.config/i3/gaps edge -4
+bindsym $mod+Shift+plus  exec --no-startup-id ~/.config/i3/gaps edge +4
+bindsym $mod+Shift+g     exec --no-startup-id ~/.config/i3/gaps reset
+exec_always --no-startup-id ~/.config/i3/gaps reset
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod

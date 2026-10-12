@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+"""Change the i3 gaps without losing the space reserved for polybar.
+
+    gaps inner +4|-4   space between windows (never below 0)
+    gaps edge +4|-4    space to the screen edges and under the bar (never below 0)
+    gaps reset         back to the gaps of the i3 config, halved when the laptop
+                       panel is the only active screen (run on screen changes)
+
+i3 does not report the gaps set with "gaps … all", so the current values are
+kept in $XDG_RUNTIME_DIR/i3-gaps.json.
+"""
+
+import json
+import os
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+STATE = Path(os.environ.get("XDG_RUNTIME_DIR", "/tmp")) / "i3-gaps.json"
+
+
+def config_gaps():
+    """inner, edge and bar height from the gaps inner/outer/top lines of the config."""
+    config = subprocess.run(["i3-msg", "-t", "get_config"], capture_output=True, text=True, check=True).stdout
+    values = dict(re.findall(r"^\s*gaps\s+(inner|outer|top)\s+(-?\d+)\s*$", config, re.MULTILINE))
+    inner, outer = int(values.get("inner", 0)), int(values.get("outer", 0))
+    top = int(values.get("top", outer))
+    # i3 adds the inner gap to the outer one at the edges
+    return {"inner": inner, "edge": outer + inner}, top - outer
+
+
+def laptop_only():
+    outputs = json.loads(subprocess.run(["i3-msg", "-t", "get_outputs"], capture_output=True, text=True,
+                                        check=True).stdout)
+    active = [o["name"] for o in outputs if o["active"]]
+    return bool(active) and all(re.match(r"(eDP|LVDS|DSI)", name) for name in active)
+
+
+def main():
+    if len(sys.argv) < 2 or sys.argv[1] not in ("inner", "edge", "reset"):
+        sys.exit(__doc__)
+    defaults, bar = config_gaps()
+    if laptop_only():
+        defaults = {key: value // 2 for key, value in defaults.items()}
+    try:
+        gaps = json.loads(STATE.read_text())
+    except (OSError, ValueError):
+        gaps = dict(defaults)
+
+    if sys.argv[1] == "reset":
+        gaps = dict(defaults)
+    else:
+        key = sys.argv[1]
+        gaps[key] = max(0, gaps[key] + int(sys.argv[2]))
+
+    inner, edge = gaps["inner"], gaps["edge"]
+    # "gaps outer" also sets the top: set it after
+    subprocess.run(["i3-msg", "-q", (f"gaps inner all set {inner}; gaps outer all set {edge - inner}; "
+                                     f"gaps top all set {bar + edge - inner}")], check=True)
+    STATE.write_text(json.dumps(gaps))
+
+
+if __name__ == "__main__":
+    main()

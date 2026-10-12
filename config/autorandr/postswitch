@@ -7,6 +7,7 @@
 
 i3-msg -q 'exec --no-startup-id ~/.config/polybar/launch.sh'
 i3-msg -q 'exec --no-startup-id ~/.config/i3/workspaces'
+i3-msg -q 'exec --no-startup-id ~/.config/i3/gaps reset'
 # The wallpaper and the lock image (bin/lock) follow the new screen size
 i3-msg -q 'exec --no-startup-id feh --no-fehbg --bg-fill ~/.local/state/theme/wallpaper'
 i3-msg -q 'exec --no-startup-id ~/.local/bin/lock --prepare'
