@@ -43,7 +43,7 @@ def main():
 
     # Workspace names, from the set $wsN "N:…" lines of the i3 config
     config = i3("get_config")
-    names = {int(n): name for n, name in re.findall(r'^\s*set\s+\$ws(\d+)\s+"([^"]+)"', config, re.M)}
+    names = {int(n): name for n, name in re.findall(r'^\s*set\s+\$ws(\d+)\s+"([^"]+)"', config, re.MULTILINE)}
 
     workspaces = i3("get_workspaces")
     focused = next((w["name"] for w in workspaces if w["focused"]), None)
