@@ -210,6 +210,24 @@ setup_system() {
         echo "enable   $unit"
         run sudo systemctl enable "$unit"
     fi
+
+    # Ubuntu's AppArmor profile of redshift only reads ~/.config/redshift.conf,
+    # and checks the target of the link: allow the config of the repository
+    local profile=/etc/apparmor.d/usr.bin.redshift local_rules=/etc/apparmor.d/local/usr.bin.redshift
+    local rule="owner $DOTFILES/config/redshift/redshift.conf r,"
+    if [ -f "$profile" ]; then
+        if grep -qxF "  $rule" "$local_rules" 2>/dev/null; then
+            echo "ok       $local_rules"
+        else
+            echo "install  $local_rules (redshift config)"
+            if [ "$DRY_RUN" = 1 ]; then
+                echo "    would run: echo '  $rule' | sudo tee -a $local_rules"
+            else
+                echo "  $rule" | sudo tee -a "$local_rules" >/dev/null
+            fi
+            run sudo apparmor_parser -r "$profile"
+        fi
+    fi
 }
 
 if [ "$PACKAGES" = 1 ]; then
