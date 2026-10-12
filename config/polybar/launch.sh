@@ -10,8 +10,14 @@ flock 9
 killall -q polybar
 
 uid=$(id -u)
-# Wait until the processes have been shut down
-while pgrep -u "$uid" -x polybar >/dev/null; do sleep 1; done
+# Wait until the processes have been shut down. A bar whose monitor went away
+# can ignore SIGTERM: kill it after 3 s
+tries=0
+while pgrep -u "$uid" -x polybar >/dev/null; do
+    tries=$((tries + 1))
+    [ "$tries" -gt 30 ] && pkill -KILL -u "$uid" -x polybar
+    sleep 0.1
+done
 
 # Hardware of this machine, for the battery and backlight modules: names
 # differ between laptops (BAT0/BAT1, AC/ADP1, intel_backlight/amdgpu_bl0…)
