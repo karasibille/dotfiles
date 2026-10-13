@@ -237,20 +237,20 @@ setup_system() {
 # unlisted, so Firefox has to confirm its installation by hand.
 setup_firefox() {
     command -v firefox >/dev/null 2>&1 || { echo "skip     firefox-desktop-theme (firefox not installed)"; return; }
-    local repo="$(dirname "$DOTFILES")/firefox-desktop-theme"
-    local url=https://github.com/karasibille/firefox-desktop-theme.git
-    if [ -d "$repo/.git" ]; then
-        echo "ok       $repo"
+    local clone url=https://github.com/karasibille/firefox-desktop-theme.git
+    clone="$(dirname "$DOTFILES")/firefox-desktop-theme"
+    if [ -d "$clone/.git" ]; then
+        echo "ok       $clone"
     else
-        echo "clone    $repo"
-        run git clone "$url" "$repo"
+        echo "clone    $clone"
+        run git clone "$url" "$clone"
     fi
     echo "host     firefox-desktop-theme"
-    run "$repo/install.sh"
+    run "$clone/install.sh"
     if compgen -G "$HOME/.mozilla/firefox/*/extensions/firefox-desktop-theme@karasibille.xpi" >/dev/null; then
         echo "ok       firefox-desktop-theme add-on"
     else
-        local on= off=
+        local on="" off=""
         [ -t 1 ] && { on=$'\033[1;33m'; off=$'\033[0m'; }
         printf '%s\n' "${on}" \
             "============================================================" \
