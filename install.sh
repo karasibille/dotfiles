@@ -56,6 +56,7 @@ LINKS=(
     "bin/theme    | $HOME/.local/bin/theme    | python3"
     "bin/lock     | $HOME/.local/bin/lock     | i3lock"
     "bin/autolock | $HOME/.local/bin/autolock | python3"
+    "bin/lidsuspend | $HOME/.local/bin/lidsuspend | i3lock"
 )
 
 run() {

@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#
+# Suspend when the screen is locked (bin/lock) and the lid has been closed
+# for LIDSUSPEND seconds (default 60, 0 disables; e.g. in ~/.profile.local).
+# Started by i3; exits at once on a machine without a lid.
+#
+# logind ignores the lid while an external monitor is connected, so a
+# locked laptop left closed on its dock would otherwise stay awake.
+set -u
+
+delay=${LIDSUSPEND:-60}
+lid=$(ls /proc/acpi/button/lid/*/state 2>/dev/null | head -n 1)
+[ "$delay" -gt 0 ] 2>/dev/null && [ -n "$lid" ] || exit 0
+
+POLL=5
+closed=0  # seconds the lid has been closed while locked
+while sleep "$POLL"; do
+    if pgrep -x i3lock >/dev/null && grep -q closed "$lid"; then
+        closed=$((closed + POLL))
+    else
+        closed=0
+    fi
+    # After a resume the count starts again: the lid still closed and the
+    # screen still locked a minute later means nobody came back
+    if [ "$closed" -ge "$delay" ]; then
+        closed=0
+        systemctl suspend
+    fi
+done

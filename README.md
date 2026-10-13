@@ -160,6 +160,14 @@ OpenCV versions. If the webcam can't be read (e.g. busy in a video
 call), only `AUTOLOCK_IDLE` applies. `autolock --check` tests the detection
 once.
 
+## Suspend with the lid closed
+
+logind suspends when the lid is closed, except while an external monitor is
+connected (docked). `bin/lidsuspend`, started by i3, also suspends when the
+screen is locked and the lid has been closed for a minute, wherever the
+laptop is. `LIDSUSPEND` in `~/.profile.local` sets the delay in seconds
+(`0` disables it). It does nothing on a machine without a lid.
+
 ## Machine-specific settings
 
 These files are sourced when present and are not versioned:

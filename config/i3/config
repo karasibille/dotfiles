@@ -313,6 +313,8 @@ exec_always --no-startup-id ~/.local/bin/lock --prepare
 
 # Lock when nobody is in front of the screen, if AUTOLOCK is set (bin/autolock)
 exec --no-startup-id ~/.local/bin/autolock
+# Suspend when locked with the lid closed for a minute (bin/lidsuspend)
+exec --no-startup-id ~/.local/bin/lidsuspend
 # Lock before suspend (lid, power menu) and on loginctl lock-session
 exec --no-startup-id xss-lock --transfer-sleep-lock -- ~/.local/bin/lock --nofork
 
