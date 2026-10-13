@@ -60,8 +60,10 @@ To add a theme, copy `config/xrdb/colors/nord` and change the colors: `backgroun
 Firefox follows with the
 [firefox-desktop-theme](https://github.com/karasibille/firefox-desktop-theme)
 extension: `theme` writes the Firefox colors to `~/.local/state/theme/firefox.json`
-where the extension's native host picks them up and applies them live. Install the
-extension and run its `install.sh` once per machine.
+where the extension's native host picks them up and applies them live.
+`./install.sh --packages` clones the extension next to this repository and runs
+its `install.sh`; the `.xpi` of the extension is still installed by hand (the
+script prints the link).
 
 ## Monitors
 

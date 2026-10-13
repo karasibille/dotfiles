@@ -6,7 +6,9 @@
 #   ./install.sh --packages  first install the missing packages (packages.txt),
 #                            with pacman/yay on Arch or apt on Ubuntu, the
 #                            backlight udev rule and the clock resync after
-#                            resume (system/)
+#                            resume (system/), and the native host of the
+#                            firefox-desktop-theme extension (cloned next to
+#                            this repository)
 #   ./install.sh --dry-run   only show what would be done (with or without
 #                            --packages)
 #
@@ -230,9 +232,41 @@ setup_system() {
     fi
 }
 
+# Firefox follows the theme through the firefox-desktop-theme extension: clone
+# it next to this repository and declare its native host. The add-on itself is
+# unlisted, so Firefox has to confirm its installation by hand.
+setup_firefox() {
+    command -v firefox >/dev/null 2>&1 || { echo "skip     firefox-desktop-theme (firefox not installed)"; return; }
+    local repo="$(dirname "$DOTFILES")/firefox-desktop-theme"
+    local url=https://github.com/karasibille/firefox-desktop-theme.git
+    if [ -d "$repo/.git" ]; then
+        echo "ok       $repo"
+    else
+        echo "clone    $repo"
+        run git clone "$url" "$repo"
+    fi
+    echo "host     firefox-desktop-theme"
+    run "$repo/install.sh"
+    if compgen -G "$HOME/.mozilla/firefox/*/extensions/firefox-desktop-theme@karasibille.xpi" >/dev/null; then
+        echo "ok       firefox-desktop-theme add-on"
+    else
+        local on= off=
+        [ -t 1 ] && { on=$'\033[1;33m'; off=$'\033[0m'; }
+        printf '%s\n' "${on}" \
+            "============================================================" \
+            "  MANUAL STEP: Firefox does not follow the theme yet" \
+            "  1. Open desktop-theme-<version>.xpi from" \
+            "     https://github.com/karasibille/firefox-desktop-theme/releases/latest" \
+            "     in Firefox and confirm" \
+            "  2. Disable laser and nord in about:addons" \
+            "============================================================" "${off}"
+    fi
+}
+
 if [ "$PACKAGES" = 1 ]; then
     install_packages
     setup_system
+    setup_firefox
 fi
 
 for entry in "${LINKS[@]}"; do
