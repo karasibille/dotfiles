@@ -168,6 +168,30 @@ screen is locked and the lid has been closed for a minute, wherever the
 laptop is. `LIDSUSPEND` in `~/.profile.local` sets the delay in seconds
 (`0` disables it). It does nothing on a machine without a lid.
 
+## Hibernate
+
+The power menu of polybar offers suspend and hibernate (both locked first
+by xss-lock). Hibernate only works once the machine can write its memory
+to swap and read it back at boot, which is per machine and not done by
+`install.sh`. With Ubuntu's swap file on the root filesystem:
+
+```sh
+free -h                                    # swap must hold the used memory: aim for the RAM size
+sudo swapoff -a && sudo rm /swap.img
+sudo fallocate -l 32G /swap.img && sudo chmod 600 /swap.img
+sudo mkswap /swap.img && sudo swapon /swap.img
+findmnt -no SOURCE /                       # the root device, e.g. /dev/mapper/ubuntu--vg-ubuntu--lv
+sudo filefrag -v /swap.img | awk 'NR==4 {print $4}' | tr -d .   # the resume offset
+```
+
+Then add `resume=<root device> resume_offset=<offset>` to
+`GRUB_CMDLINE_LINUX_DEFAULT` in `/etc/default/grub`, write
+`RESUME=<root device>` to `/etc/initramfs-tools/conf.d/resume`, and run
+`sudo update-grub && sudo update-initramfs -u`. Reboot, then test with
+`systemctl hibernate`: the session must be back after the next boot.
+Secure Boot's lockdown mode forbids hibernation; disable it in the firmware
+or sign the kernel.
+
 ## Machine-specific settings
 
 These files are sourced when present and are not versioned:
