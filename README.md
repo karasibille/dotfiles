@@ -190,7 +190,9 @@ Then add `resume=<root device> resume_offset=<offset>` to
 `sudo update-grub && sudo update-initramfs -u`. Reboot, then test with
 `systemctl hibernate`: the session must be back after the next boot.
 Secure Boot's lockdown mode forbids hibernation; disable it in the firmware
-or sign the kernel.
+or sign the kernel. Test it unplugged from any dock first: a USB-C dock
+can leave the resumed system without input or disk (ThinkPad L16 Gen 2 and
+HP G5 dock, Linux 6.17), in which case only hibernate undocked.
 
 Ubuntu also denies hibernation by polkit (`com.ubuntu.desktop.rules`):
 `systemctl hibernate` answers `Access denied` until a rule sorted before it
