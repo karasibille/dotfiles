@@ -192,6 +192,21 @@ Then add `resume=<root device> resume_offset=<offset>` to
 Secure Boot's lockdown mode forbids hibernation; disable it in the firmware
 or sign the kernel.
 
+Ubuntu also denies hibernation by polkit (`com.ubuntu.desktop.rules`):
+`systemctl hibernate` answers `Access denied` until a rule sorted before it
+allows it, e.g. `/etc/polkit-1/rules.d/10-enable-hibernate.rules`:
+
+```js
+polkit.addRule(function(action, subject) {
+    if ((action.id == "org.freedesktop.login1.hibernate" ||
+         action.id == "org.freedesktop.login1.handle-hibernate-key" ||
+         action.id == "org.freedesktop.login1.hibernate-multiple-sessions") &&
+        subject.active && subject.local) {
+        return polkit.Result.YES;
+    }
+});
+```
+
 ## Machine-specific settings
 
 These files are sourced when present and are not versioned:
