@@ -9,8 +9,9 @@
 set -u
 
 delay=${LIDSUSPEND:-60}
-lid=$(ls /proc/acpi/button/lid/*/state 2>/dev/null | head -n 1)
-[ "$delay" -gt 0 ] 2>/dev/null && [ -n "$lid" ] || exit 0
+set -- /proc/acpi/button/lid/*/state
+lid=$1
+[ "$delay" -gt 0 ] 2>/dev/null && [ -e "$lid" ] || exit 0
 
 POLL=5
 closed=0  # seconds the lid has been closed while locked
