@@ -5,50 +5,74 @@ label-open-foreground = ${colors.primary}
 
 label-close = 
 label-close-foreground = ${colors.red}
+label-close-background = ${colors.focused}
+label-close-padding = 1
 
-label-separator = "  "
+label-separator = " "
+label-separator-background = ${colors.focused}
 
+; Open, the menu inverts the bar colors like the focused workspace
 ; Level 0: the actions; each one opens its confirmation level (1 to 5), where
 ; clicking the action again runs it and  closes the menu
 menu-0-0 = 
 menu-0-0-exec = #powermenu.open.1
 menu-0-0-foreground = ${colors.yellow}
+menu-0-0-background = ${colors.focused}
+menu-0-0-padding = 1
 
 menu-0-1 = 
 menu-0-1-exec = #powermenu.open.2
 menu-0-1-foreground = ${colors.purple}
+menu-0-1-background = ${colors.focused}
+menu-0-1-padding = 1
 
 menu-0-2 = 
 menu-0-2-exec = #powermenu.open.3
 menu-0-2-foreground = ${colors.cyan}
+menu-0-2-background = ${colors.focused}
+menu-0-2-padding = 1
 
 menu-0-3 = 
 menu-0-3-exec = #powermenu.open.4
 menu-0-3-foreground = ${colors.green}
+menu-0-3-background = ${colors.focused}
+menu-0-3-padding = 1
 
 menu-0-4 = 
 menu-0-4-exec = #powermenu.open.5
 menu-0-4-foreground = ${colors.blue}
+menu-0-4-background = ${colors.focused}
+menu-0-4-padding = 1
 
 ; Log out of i3
 menu-1-0 =  ?
 menu-1-0-exec = i3-msg exit
 menu-1-0-foreground = ${colors.yellow}
+menu-1-0-background = ${colors.focused}
+menu-1-0-padding = 1
 
 ; Suspend and hibernate are locked first by xss-lock (i3/config)
 menu-2-0 =  ?
 menu-2-0-exec = systemctl suspend
 menu-2-0-foreground = ${colors.purple}
+menu-2-0-background = ${colors.focused}
+menu-2-0-padding = 1
 
 ; Hibernate needs the swap and resume setup of the README
 menu-3-0 =  ?
 menu-3-0-exec = systemctl hibernate
 menu-3-0-foreground = ${colors.cyan}
+menu-3-0-background = ${colors.focused}
+menu-3-0-padding = 1
 
 menu-4-0 =  ?
 menu-4-0-exec = systemctl reboot
 menu-4-0-foreground = ${colors.green}
+menu-4-0-background = ${colors.focused}
+menu-4-0-padding = 1
 
 menu-5-0 =  ?
 menu-5-0-exec = systemctl poweroff
 menu-5-0-foreground = ${colors.blue}
+menu-5-0-background = ${colors.focused}
+menu-5-0-padding = 1
